@@ -1,0 +1,31 @@
+# Secretos — nunca commitear
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+
+# Supabase (cuando se integre)
+.supabase/
+supabase/.temp/
+
+# Cloudflare
+.wrangler/
+.dev.vars
+
+# Dependencias (por si algún día hacen falta)
+node_modules/
+
+# Sistema operativo
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Editores
+.vscode/
+.idea/
+*.swp
+
+# Temporales
+*.log
+tmp/

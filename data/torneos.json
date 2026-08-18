@@ -1,0 +1,68 @@
+[
+  {
+    "id": "copa-fugaz-f11",
+    "nombre": "Copa Fugaz Fútbol 11",
+    "modalidad": "Fútbol 11",
+    "temporada": "2026",
+    "jugadoresPorEquipo": 11,
+    "categorias": [
+      {
+        "id": "f11-libre",
+        "nombre": "Libre",
+        "edadMinima": 18,
+        "edadMaxima": null,
+        "fechaLimite": "2026-02-28",
+        "maxJugadores": 22
+      },
+      {
+        "id": "f11-sub16",
+        "nombre": "Sub-16",
+        "edadMinima": 14,
+        "edadMaxima": 16,
+        "fechaLimite": "2026-09-10",
+        "maxJugadores": 20
+      },
+      {
+        "id": "f11-sub40",
+        "nombre": "Sub-40",
+        "edadMinima": 30,
+        "edadMaxima": 40,
+        "fechaLimite": "2026-08-31",
+        "maxJugadores": 20
+      }
+    ]
+  },
+  {
+    "id": "copa-fugaz-f7",
+    "nombre": "Copa Fugaz Fútbol 7",
+    "modalidad": "Fútbol 7",
+    "temporada": "2026",
+    "jugadoresPorEquipo": 7,
+    "categorias": [
+      {
+        "id": "f7-sub8",
+        "nombre": "Sub-8",
+        "edadMinima": 6,
+        "edadMaxima": 8,
+        "fechaLimite": "2026-09-20",
+        "maxJugadores": 14
+      },
+      {
+        "id": "f7-sub10",
+        "nombre": "Sub-10",
+        "edadMinima": 8,
+        "edadMaxima": 10,
+        "fechaLimite": "2026-09-20",
+        "maxJugadores": 14
+      },
+      {
+        "id": "f7-sub12",
+        "nombre": "Sub-12",
+        "edadMinima": 10,
+        "edadMaxima": 12,
+        "fechaLimite": "2026-08-20",
+        "maxJugadores": 14
+      }
+    ]
+  }
+]
