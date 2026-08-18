@@ -121,9 +121,17 @@ export function vistaInicio() {
   const hero = `
     <section class="hero">
       <div class="contenedor">
-        <span class="hero__etiqueta">Temporada ${escapar(torneo.temporada)}</span>
-        <h1 class="hero__titulo">Liga de Fútbol<br>Amateur <em>Fugaz</em></h1>
-        <p class="hero__sub">${escapar(torneo.descripcion)}</p>
+        <div class="hero__cabecera">
+          <span class="hero__escudo">
+            <img src="assets/img/escudo.png" width="116" height="116"
+                 alt="Escudo de la Liga de Fútbol Amateur Fugaz">
+          </span>
+          <div>
+            <span class="hero__etiqueta">Temporada ${escapar(torneo.temporada)}</span>
+            <h1 class="hero__titulo">Liga de Fútbol<br>Amateur <em>Fugaz</em></h1>
+            <p class="hero__sub">${escapar(torneo.descripcion)}</p>
+          </div>
+        </div>
         <div class="acciones" style="border:0;padding-top:16px;margin-top:0">
           <a class="boton" href="#/inscripcion">Inscribir mi club</a>
           <a class="boton boton--secundario" href="#/organizador">Panel del organizador</a>

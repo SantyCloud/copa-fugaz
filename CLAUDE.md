@@ -35,13 +35,39 @@ cuando el torneo ya tiene equipos inscritos.
 
 ## Identidad visual
 
-Tomada del escudo que envió el cliente: **fondo oscuro metálico, verde neón como color
-principal** y los cuatro colores de LDFAF (verde, azul, ámbar, rojo) para distinguir
-categorías y estados. Diseño **mobile-first** y **solo tema oscuro** — es la identidad de
-la marca, no una preferencia del usuario.
+Tomada del escudo que envió el cliente (`assets/img/escudo.png`). Diseño **mobile-first**
+y **solo tema oscuro** — es la identidad de la marca, no una preferencia del usuario.
 
-⚠️ **Falta el logo real.** Ahora hay un escudo SVG de relleno en `index.html`. Cuando el
-cliente envíe el archivo, ponerlo en `assets/img/escudo.png` y sustituir ese bloque.
+**Los colores se extrajeron del PNG, no se inventaron.** Se midió el tono dominante de
+cada uno de los cinco cuadros del escudo y se aclaró lo justo para que contraste sobre
+fondo oscuro:
+
+| Cuadro | Tono | Variable CSS | Valor |
+|---|---|---|---|
+| L | 133° verde | `--ldfaf-verde` | `#28ad46` |
+| D | 214° azul | `--ldfaf-azul` | `#2861ad` |
+| F | gris | `--ldfaf-grafito` | `#2c2c2e` |
+| A | 267° morado | `--ldfaf-morado` | `#6528ad` |
+| F | 2° rojo | `--ldfaf-rojo` | `#ad2c28` |
+
+El **color principal de acción** es `--neon: #34c85c`, el verde del escudo aclarado
+(contraste 9.0:1 sobre el fondo). Una versión anterior usaba un verde lima neón
+(`#9ee641`) que no estaba en el logo: venía de una infografía de referencia. Cambiar el
+color principal es tocar una sola variable.
+
+### Los archivos del escudo
+
+| Archivo | Tamaño | Dónde se usa |
+|---|---|---|
+| `assets/img/escudo.png` | 512×512, 175 KB | portada |
+| `assets/img/escudo-mini.png` | 128×128, 15 KB | cabecera |
+
+Salen del original de 1254×1254 y 1,2 MB, reducidos para no castigar el móvil.
+
+⚠️ **El PNG no tiene transparencia**: su fondo es negro sólido. Por eso los contenedores
+`.marca__escudo` y `.hero__escudo` van con `background: #000`, para que no se recorte una
+caja negra sobre el fondo del sitio. Si el cliente envía una versión con fondo
+transparente, se puede quitar ese negro.
 
 ## Flujo de trabajo
 
@@ -100,6 +126,7 @@ assets/js/liga.js         cálculo de clasificación y goleadores
 assets/js/ui.js           vistas de competición + utilidades compartidas
 assets/js/panel.js        carga de resultados de partidos
 assets/css/estilos.css
+assets/img/escudo*.png     escudo del cliente, en dos tamaños
 ```
 
 ### Dos decisiones que conviene no romper

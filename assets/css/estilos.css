@@ -1,9 +1,10 @@
 /* ═══════════════════════════════════════════════════════════════════════════
    LIGA DE FÚTBOL AMATEUR FUGAZ — hoja de estilos única.
 
-   Identidad tomada del escudo LDFAF: fondo oscuro metálico, verde neón como
-   color principal y los cuatro colores del logo (verde, azul, ámbar, rojo)
-   para diferenciar categorías y estados.
+   Identidad tomada del escudo LDFAF (assets/img/escudo.png): fondo oscuro
+   metálico, el verde del escudo como color principal y los cinco cuadros del
+   logo (verde, azul, grafito, morado, rojo) para diferenciar estados.
+   Los colores se extrajeron del PNG del cliente, no se inventaron.
 
    Sin frameworks ni dependencias. Diseño mobile-first: los bloques @media
    solo añaden estilos para pantallas grandes.
@@ -25,18 +26,24 @@
   --texto-medio:      #9daaa3;
   --texto-tenue:      #6b7873;
 
-  /* Verde neón del logo: color principal */
-  --neon:             #9ee641;
-  --neon-fuerte:      #b6f75c;
-  --neon-hondo:       #16220c;
-  --neon-borde:       #3c5a1c;
-  --sobre-neon:       #0a1004;
+  /* Verde del escudo (tono 133°, aclarado para que contraste en oscuro).
+     Es el color principal de acción de toda la interfaz. */
+  --neon:             #34c85c;
+  --neon-fuerte:      #4ee077;
+  --neon-hondo:       #0c2415;
+  --neon-borde:       #1e5c33;
+  --sobre-neon:       #04140a;
 
-  /* Los cuatro colores de LDFAF */
-  --ldfaf-verde:      #43b649;
-  --ldfaf-azul:       #2f6fd0;
-  --ldfaf-ambar:      #e0a02a;
-  --ldfaf-rojo:       #cf3a3a;
+  /* Los cinco cuadros del escudo LDFAF, tomados del PNG del cliente */
+  --ldfaf-verde:      #28ad46;
+  --ldfaf-azul:       #2861ad;
+  --ldfaf-grafito:    #2c2c2e;
+  --ldfaf-morado:     #6528ad;
+  --ldfaf-rojo:       #ad2c28;
+
+  /* Plata del marco metálico */
+  --plata:            #c8ccd0;
+  --plata-honda:      #6e767c;
 
   /* Estados */
   --exito:            #64d67a;
@@ -48,7 +55,7 @@
 
   --sombra:      0 1px 2px rgba(0,0,0,.5), 0 6px 18px rgba(0,0,0,.4);
   --sombra-alta: 0 8px 22px rgba(0,0,0,.55), 0 20px 48px rgba(0,0,0,.45);
-  --brillo:      0 0 0 1px rgba(158,230,65,.25), 0 0 22px rgba(158,230,65,.16);
+  --brillo:      0 0 0 1px rgba(52,200,92,.28), 0 0 22px rgba(52,200,92,.18);
 
   --radio:       16px;
   --radio-chico: 10px;
@@ -67,7 +74,7 @@ body {
   margin: 0;
   font-family: var(--fuente);
   background:
-    radial-gradient(1000px 420px at 50% -10%, rgba(158,230,65,.07), transparent 70%),
+    radial-gradient(1000px 420px at 50% -10%, rgba(52,200,92,.08), transparent 70%),
     var(--fondo);
   background-attachment: fixed;
   color: var(--texto);
@@ -122,17 +129,32 @@ button { font: inherit; cursor: pointer; }
 .marca { display: flex; align-items: center; gap: 10px; min-width: 0; }
 
 .marca__escudo {
-  width: 34px; height: 34px;
+  width: 36px; height: 36px;
   flex-shrink: 0;
   border-radius: 9px;
-  background: linear-gradient(155deg, #2b322d, #10130f);
+  /* El PNG del escudo no tiene transparencia: su fondo es negro sólido.
+     Por eso el contenedor va en negro, para que no se recorte una caja. */
+  background: #000;
   border: 1px solid var(--borde-vivo);
   display: grid;
   place-items: center;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.07);
   overflow: hidden;
 }
-.marca__escudo img { width: 100%; height: 100%; object-fit: contain; }
+.marca__escudo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* Escudo grande de la portada */
+.hero__escudo {
+  width: 116px; height: 116px;
+  border-radius: 20px;
+  background: #000;
+  border: 1px solid var(--borde-vivo);
+  overflow: hidden;
+  flex-shrink: 0;
+  box-shadow: var(--sombra-alta);
+}
+.hero__escudo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.hero__cabecera { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
 
 .marca__texto { display: flex; flex-direction: column; line-height: 1.1; min-width: 0; }
 .marca__titulo {
@@ -151,13 +173,14 @@ button { font: inherit; cursor: pointer; }
   white-space: nowrap;
 }
 
-/* Franja con los cuatro colores del escudo */
+/* Franja con los cinco cuadros del escudo: L-D-F-A-F */
 .tira-colores { display: flex; height: 3px; }
 .tira-colores span { flex: 1; }
 .tira-colores span:nth-child(1) { background: var(--ldfaf-verde); }
 .tira-colores span:nth-child(2) { background: var(--ldfaf-azul); }
-.tira-colores span:nth-child(3) { background: var(--ldfaf-ambar); }
-.tira-colores span:nth-child(4) { background: var(--ldfaf-rojo); }
+.tira-colores span:nth-child(3) { background: var(--ldfaf-grafito); }
+.tira-colores span:nth-child(4) { background: var(--ldfaf-morado); }
+.tira-colores span:nth-child(5) { background: var(--ldfaf-rojo); }
 
 .nav {
   display: flex;
@@ -571,8 +594,8 @@ a.seccion__nota:hover { color: var(--neon); }
   font-size: .76rem; font-weight: 900; font-family: var(--fuente-num);
   background: var(--superficie-max); color: var(--texto-medio);
 }
-.medalla--1 { background: var(--ldfaf-ambar); color: #1a1200; }
-.medalla--2 { background: #9aa7ae; color: #10161a; }
+.medalla--1 { background: var(--aviso); color: #1a1200; }
+.medalla--2 { background: var(--plata-honda); color: #f0f2f4; }
 .medalla--3 { background: #b0703c; color: #180d04; }
 
 .barra-goles {
@@ -628,7 +651,7 @@ a.seccion__nota:hover { color: var(--neon); }
 .entrada:focus, .selector:focus {
   outline: none;
   border-color: var(--neon);
-  box-shadow: 0 0 0 3px rgba(158,230,65,.15);
+  box-shadow: 0 0 0 3px rgba(52,200,92,.16);
 }
 .entrada:disabled, .selector:disabled { opacity: .5; cursor: not-allowed; }
 
