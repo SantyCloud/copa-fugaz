@@ -1,7 +1,8 @@
 {
-  "nombre": "Copa Fugaz",
+  "nombre": "Liga de Fútbol Amateur Fugaz",
+  "siglas": "LDFAF",
   "temporada": "2026",
-  "descripcion": "Campeonato local de fútbol",
+  "descripcion": "Copa Fugaz Fútbol 11 · Categoría Libre",
   "jornadasTotales": 9,
   "puntosVictoria": 3,
   "puntosEmpate": 1,

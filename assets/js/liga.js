@@ -94,7 +94,8 @@ export function calcularGoleadores(jugadores, equipos, partidos) {
   lista.sort(
     (a, b) =>
       b.goles - a.goles ||
-      a.jugador.nombre.localeCompare(b.jugador.nombre, 'es')
+      (a.jugador.nombreCompleto || a.jugador.nombre).localeCompare(
+        b.jugador.nombreCompleto || b.jugador.nombre, 'es')
   );
 
   // Posición compartida entre jugadores con los mismos goles.

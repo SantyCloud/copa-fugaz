@@ -45,6 +45,15 @@ function textoSobre(hex) {
   return (r * 299 + g * 587 + b * 114) / 1000 > 145 ? '#111111' : '#ffffff';
 }
 
+/** Nombre completo del jugador, venga del formato viejo o del nuevo. */
+export function nombreJugador(jugador) {
+  if (!jugador) return '';
+  return (
+    jugador.nombreCompleto ||
+    [jugador.nombre, jugador.apellidos].filter(Boolean).join(' ')
+  );
+}
+
 /** Escudo del equipo: cuadro con el color del club y su abreviatura. */
 export function escudo(equipo, clase = '') {
   if (!equipo) return `<span class="escudo ${escapar(clase)}"></span>`;
@@ -57,7 +66,7 @@ export function escudo(equipo, clase = '') {
 }
 
 /** "2026-03-07" → "sábado, 7 de marzo". Sin desfase de zona horaria. */
-function formatearFecha(iso, opciones) {
+export function formatearFecha(iso, opciones) {
   if (!iso) return '';
   const [a, m, d] = String(iso).split('-').map(Number);
   if (!a || !m || !d) return escapar(iso);
@@ -107,11 +116,27 @@ export function vistaInicio() {
     .sort((a, b) => a.jornada - b.jornada)
     .slice(0, 5);
 
+  const abiertas = Datos.getCategorias().filter((c) => Datos.plazoAbierto(c).abierto).length;
+
   const hero = `
     <section class="hero">
       <div class="contenedor">
-        <h1 class="hero__titulo">${escapar(torneo.nombre)}</h1>
-        <p class="hero__sub">${escapar(torneo.descripcion)} · Temporada ${escapar(torneo.temporada)}</p>
+        <span class="hero__etiqueta">Temporada ${escapar(torneo.temporada)}</span>
+        <h1 class="hero__titulo">Liga de Fútbol<br>Amateur <em>Fugaz</em></h1>
+        <p class="hero__sub">${escapar(torneo.descripcion)}</p>
+        <div class="acciones" style="border:0;padding-top:16px;margin-top:0">
+          <a class="boton" href="#/inscripcion">Inscribir mi club</a>
+          <a class="boton boton--secundario" href="#/organizador">Panel del organizador</a>
+        </div>
+        ${
+          abiertas
+            ? `<div class="aviso aviso--info" style="margin:18px 0 0">
+                 <span class="aviso__icono">📣</span>
+                 <div>Hay <strong>${abiertas} categoría${abiertas === 1 ? '' : 's'}</strong>
+                 con la inscripción abierta. <a href="#/inscripcion" style="color:var(--neon);font-weight:700">Ver plazos →</a></div>
+               </div>`
+            : ''
+        }
         <div class="hero__stats">
           <div class="stat">
             <div class="stat__valor">${resumen.partidosJugados}<span class="tenue" style="font-size:.9rem">/${resumen.partidosTotales}</span></div>
@@ -257,7 +282,7 @@ function filaPartido(partido, indiceEquipos, opciones = {}) {
       .sort((a, b) => a.minuto - b.minuto)
       .map((g) => {
         const j = Datos.getJugador(g.jugadorId);
-        return j ? `<span>⚽ ${escapar(j.nombre)} ${g.minuto}'</span>` : '';
+        return j ? `<span>⚽ ${escapar(nombreJugador(j))} ${g.minuto}'</span>` : '';
       })
       .filter(Boolean)
       .join('');
@@ -404,7 +429,7 @@ export function vistaEquipo(params = {}) {
       (j) => `
       <tr>
         <td class="tenue">${j.dorsal}</td>
-        <td class="izq">${escapar(j.nombre)}</td>
+        <td class="izq">${escapar(nombreJugador(j))}</td>
         <td class="izq tenue">${escapar(j.posicion)}</td>
         <td class="tenue">${j.edad}</td>
         <td class="${j.goles ? 'destacado' : 'tenue'}">${j.goles}</td>
@@ -484,7 +509,7 @@ export function vistaGoleadores() {
       return `
         <tr>
           <td><span class="medalla medalla--${item.posicion <= 3 ? item.posicion : 'n'}">${item.posicion}</span></td>
-          <td class="izq">${escapar(item.jugador.nombre)}</td>
+          <td class="izq">${escapar(nombreJugador(item.jugador))}</td>
           <td class="izq">${
             item.equipo
               ? enlaceEquipo(

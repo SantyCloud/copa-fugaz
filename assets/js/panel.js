@@ -8,7 +8,7 @@
 
 import { Datos } from './data.js';
 import { agruparPorJornada } from './liga.js';
-import { escapar, escudo } from './ui.js';
+import { escapar, escudo, nombreJugador } from './ui.js';
 
 /** Filas de goleadores que el usuario está editando ahora mismo. */
 let borrador = [];
@@ -50,7 +50,7 @@ function opcionesJugadores(partido, seleccionadoId) {
           .map(
             (j) =>
               `<option value="${j.id}" ${j.id === seleccionadoId ? 'selected' : ''}>` +
-              `${j.dorsal}. ${escapar(j.nombre)}</option>`
+              `${j.dorsal}. ${escapar(nombreJugador(j))}</option>`
           )
           .join('');
         return `<optgroup label="${escapar(equipo.nombre)}">${jugadores}</optgroup>`;

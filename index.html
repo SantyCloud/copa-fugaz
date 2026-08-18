@@ -3,50 +3,61 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Clasificación, calendario, resultados y goleadores del campeonato de fútbol.">
-  <meta name="color-scheme" content="light dark">
-  <meta name="theme-color" content="#12854a">
-  <title>Copa Fugaz</title>
+  <meta name="description" content="Liga de Fútbol Amateur Fugaz: inscripción de clubes, calendario, resultados y clasificación.">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#080a09">
+  <title>Liga de Fútbol Amateur Fugaz</title>
 
   <link rel="stylesheet" href="assets/css/estilos.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%2312854a'/><text y='50%' x='50%' dy='.36em' text-anchor='middle' font-size='58'>⚽</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23080a09'/><path d='M50 14 82 26v30c0 18-14 27-32 32-18-5-32-14-32-32V26z' fill='none' stroke='%239ee641' stroke-width='7'/></svg>">
 </head>
 <body>
 
   <header class="cabecera">
+    <div class="tira-colores" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
     <div class="contenedor cabecera__fila">
       <a class="marca" href="#/">
-        <span class="marca__icono" aria-hidden="true">⚽</span>
-        <span id="marca-nombre">Copa Fugaz</span>
-        <span class="marca__temporada" id="marca-temporada">2026</span>
+        <!-- Marcador de posición del escudo. Sustituir por el logo real del
+             cliente en assets/img/escudo.png y cambiar este bloque por <img>. -->
+        <span class="marca__escudo" aria-hidden="true">
+          <svg viewBox="0 0 100 100" width="24" height="24">
+            <path d="M50 12 84 25v31c0 19-15 29-34 34-19-5-34-15-34-34V25z"
+                  fill="none" stroke="#9ee641" stroke-width="8" stroke-linejoin="round"/>
+            <circle cx="50" cy="52" r="13" fill="#9ee641"/>
+          </svg>
+        </span>
+        <span class="marca__texto">
+          <span class="marca__titulo">LIGA <em>FUGAZ</em></span>
+          <span class="marca__sub">Fútbol amateur</span>
+        </span>
       </a>
 
       <nav class="nav" aria-label="Secciones del sitio">
-        <a class="nav__enlace" data-nav="inicio"     href="#/">Clasificación</a>
-        <a class="nav__enlace" data-nav="calendario" href="#/calendario">Calendario</a>
-        <a class="nav__enlace" data-nav="equipos"    href="#/equipos">Equipos</a>
-        <a class="nav__enlace" data-nav="goleadores" href="#/goleadores">Goleadores</a>
-        <a class="nav__enlace" data-nav="panel"      href="#/panel">Panel</a>
+        <a class="nav__enlace" data-nav="inscripcion" href="#/inscripcion">Inscripción</a>
+        <a class="nav__enlace" data-nav="organizador" href="#/organizador">Organizador</a>
+        <a class="nav__enlace" data-nav="inicio"      href="#/">Clasificación</a>
+        <a class="nav__enlace" data-nav="calendario"  href="#/calendario">Calendario</a>
+        <a class="nav__enlace" data-nav="equipos"     href="#/equipos">Clubes</a>
+        <a class="nav__enlace" data-nav="goleadores"  href="#/goleadores">Goleadores</a>
+        <a class="nav__enlace" data-nav="panel"       href="#/panel">Resultados</a>
       </nav>
-
-      <button class="boton-tema" id="btn-tema" type="button" aria-label="Cambiar tema">☾</button>
     </div>
   </header>
 
   <div id="app">
-    <div class="cargando">Cargando el campeonato…</div>
+    <div class="cargando">Cargando la liga…</div>
   </div>
 
   <footer class="pie">
     <div class="contenedor pie__fila">
-      <span>Copa Fugaz · Temporada <span id="pie-anio">2026</span></span>
+      <span>Liga de Fútbol Amateur Fugaz · Temporada <span id="pie-anio">2026</span></span>
       <span>Versión de demostración</span>
     </div>
   </footer>
 
   <noscript>
-    <div class="contenedor" style="padding:40px 20px">
-      <p>Esta web necesita JavaScript activado para mostrar la clasificación y los resultados.</p>
+    <div class="contenedor" style="padding:40px 16px">
+      <p>Esta web necesita JavaScript activado para funcionar.</p>
     </div>
   </noscript>
 
