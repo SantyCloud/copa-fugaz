@@ -228,6 +228,20 @@ lo bloquea.
 python -m http.server 8000
 ```
 
+## Caché al publicar
+
+GitHub Pages guarda los archivos en el navegador unos 10 minutos. Tras publicar,
+**quien ya haya visitado la web puede seguir viendo la anterior** hasta que recargue
+forzando (`Ctrl+Shift+R`) o pasen esos minutos.
+
+A quien entra por primera vez —el cliente— no le afecta: no tiene nada guardado.
+
+El pie muestra un **sello de versión** (`VERSION` en `assets/js/app.js`) para saber de un
+vistazo si lo que se ve es la última publicación. Subirlo a mano al publicar.
+
+No se versiona el nombre de los archivos: los `import` anidados no heredarían la consulta
+y quedaría una mezcla de código nuevo y viejo, que rompe más de lo que arregla.
+
 ## Convenciones
 
 - Idioma de la interfaz y de los datos: **español**.

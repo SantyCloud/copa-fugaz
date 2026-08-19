@@ -29,6 +29,9 @@ import { cargarPlanes, vistaPlanes, vistaMembresiaRequerida } from './membresia.
 import { vistaEstadisticas } from './estadisticas.js';
 import { activarAnimaciones, detenerAnimaciones } from './animaciones.js';
 
+/** Se sube a mano en cada publicación. Aparece en el pie de la web. */
+const VERSION = 'v8';
+
 /* ─────────────────────────────── rutas ─────────────────────────────────── */
 
 const RUTAS = [
@@ -233,6 +236,11 @@ async function iniciar() {
   const torneo = Datos.getTorneo();
   const anio = document.getElementById('pie-anio');
   if (anio) anio.textContent = torneo?.temporada || '';
+
+  // Sello de versión: sirve para saber de un vistazo si el navegador está
+  // enseñando la última publicación o una copia guardada en caché.
+  const sello = document.getElementById('pie-version');
+  if (sello) sello.textContent = VERSION;
 
   window.addEventListener('hashchange', pintar);
   pintar();
