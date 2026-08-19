@@ -135,9 +135,8 @@ export function vistaPortada() {
           </h1>
 
           <p class="heroe__texto-apoyo">
-            Abres las categorías, pones la fecha límite y cada club carga su propia
-            nómina desde el móvil. La clasificación, los goleadores y el calendario
-            se calculan solos a partir de los resultados.
+            Tú abres las categorías y pones la fecha límite.
+            Cada club carga su nómina desde el móvil.
           </p>
 
           <div class="heroe__acciones">${accion}</div>
@@ -160,19 +159,19 @@ export function vistaPortada() {
 
       <div class="heroe__cifras">
         <div class="contenedor cifras">
-          <div class="cifra-bloque revelar">
+          <div class="cifra-bloque revelar" style="--acento:var(--ldfaf-verde)">
             <span class="cifra-bloque__valor"><span data-contar="${categorias.length}">${categorias.length}</span></span>
             <span class="cifra-bloque__etiqueta">Categorías listas</span>
           </div>
-          <div class="cifra-bloque revelar">
+          <div class="cifra-bloque revelar" style="--acento:var(--ldfaf-azul)">
             <span class="cifra-bloque__valor">Sub-8<span class="cifra-bloque__a">→</span>Sub-40</span>
             <span class="cifra-bloque__etiqueta">Rango de edades</span>
           </div>
-          <div class="cifra-bloque revelar">
+          <div class="cifra-bloque revelar" style="--acento:var(--ldfaf-morado)">
             <span class="cifra-bloque__valor"><span data-contar="${torneos.length}">${torneos.length}</span></span>
             <span class="cifra-bloque__etiqueta">Torneos creados</span>
           </div>
-          <div class="cifra-bloque revelar">
+          <div class="cifra-bloque revelar" style="--acento:var(--ldfaf-rojo)">
             <span class="cifra-bloque__valor">0</span>
             <span class="cifra-bloque__etiqueta">Planillas en papel</span>
           </div>
@@ -186,52 +185,49 @@ export function vistaPortada() {
         <section class="seccion">
           <div class="seccion__cabecera revelar">
             <div>
-              <span class="seccion__ojo">Cómo funciona</span>
+              <span class="seccion__ojo" style="--acento:var(--ldfaf-verde)">Cómo funciona</span>
               <h2 class="seccion__titulo seccion__titulo--grande">Del anuncio del torneo<br>al primer partido</h2>
             </div>
           </div>
           <div class="guia">
-            ${paso(1, 'verde', 'Creas el torneo', 'Le pones nombre, eliges modalidad y abres las categorías que necesites, de Sub-8 a Sub-40.')}
-            ${paso(2, 'azul', 'Fijas la fecha límite', 'Cada categoría cierra el día que tú digas. Pasada esa fecha nadie añade ni quita jugadores.')}
-            ${paso(3, 'morado', 'Cada club carga su nómina', 'Registras el club y le das su acceso. Su dirigente inscribe a los jugadores con nombre, edad y cédula.')}
-            ${paso(4, 'rojo', 'Empieza a rodar la pelota', 'Cargas los resultados y la tabla, los goleadores y las rachas se actualizan al instante.')}
+            ${paso(1, 'verde', 'Creas el torneo', 'Nombre, modalidad y las categorías que quieras.')}
+            ${paso(2, 'azul', 'Fijas la fecha límite', 'Cada categoría cierra el día que tú digas.')}
+            ${paso(3, 'morado', 'Cada club carga su nómina', 'Le das su acceso y él inscribe a sus jugadores.')}
+            ${paso(4, 'rojo', 'Empieza a rodar la pelota', 'Cargas resultados y las tablas se hacen solas.')}
           </div>
         </section>
 
         <section class="seccion">
           <div class="seccion__cabecera revelar">
             <div>
-              <span class="seccion__ojo">Ventajas</span>
+              <span class="seccion__ojo" style="--acento:var(--ldfaf-azul)">Ventajas</span>
               <h2 class="seccion__titulo seccion__titulo--grande">Lo que te quitas de encima</h2>
             </div>
           </div>
           <div class="ventajas">
-            ${ventaja(Iconos.reloj(22), 'verde', 'El plazo se cumple solo', 'La fecha límite la pones tú y la web la hace respetar. Nadie mete un jugador a última hora.')}
-            ${ventaja(Iconos.cedula(22), 'azul', 'Sin fichas repetidas', 'Si una cédula ya está inscrita en otro club de la misma categoría, no pasa.')}
-            ${ventaja(Iconos.edad(22), 'morado', 'Cada uno en su edad', 'Un chico de 15 no entra en Sub-12. La categoría se controla al cargar la nómina.')}
-            ${ventaja(Iconos.tabla(22), 'rojo', 'Tablas que no se discuten', 'Clasificación y goleadores salen de los resultados. No hay dos versiones distintas.')}
-            ${ventaja(Iconos.movil(22), 'verde', 'Pensada para el móvil', 'Los dirigentes cargan su nómina desde el teléfono, sin instalar nada.')}
-            ${ventaja(Iconos.globo(22), 'azul', 'Página pública', 'Jugadores y familias consultan la tabla y el calendario sin necesidad de cuenta.')}
+            ${ventaja(Iconos.reloj(22), 'verde', 'El plazo se cumple solo', 'Cerrada la fecha, nadie añade jugadores.')}
+            ${ventaja(Iconos.cedula(22), 'azul', 'Sin fichas repetidas', 'Una cédula no puede estar en dos clubes.')}
+            ${ventaja(Iconos.edad(22), 'morado', 'Cada uno en su edad', 'Un chico de 15 no entra en Sub-12.')}
+            ${ventaja(Iconos.tabla(22), 'rojo', 'Tablas que no se discuten', 'Salen de los resultados. Una sola versión.')}
+            ${ventaja(Iconos.movil(22), 'verde', 'Pensada para el móvil', 'Sin instalar nada. Se usa en el navegador.')}
+            ${ventaja(Iconos.globo(22), 'azul', 'Página pública', 'Jugadores y familias la ven sin cuenta.')}
           </div>
         </section>
 
         <section class="seccion">
           <div class="franja revelar">
             <div class="franja__texto">
-              <span class="seccion__ojo">Estadísticas</span>
+              <span class="seccion__ojo" style="--acento:var(--ldfaf-morado)">Estadísticas</span>
               <h2 class="seccion__titulo seccion__titulo--grande">Los números salen solos</h2>
               <p class="franja__parrafo">
-                No se escribe nada a mano. Cada resultado que cargas recalcula la tabla,
-                los goleadores y las rachas. Si corriges un marcador, todo se ajusta.
+                Cargas un resultado y todo se recalcula. Nada se escribe a mano.
               </p>
               <a class="boton boton--secundario" href="#/estadisticas">Ver el apartado</a>
             </div>
             <ul class="franja__lista">
-              <li>${Iconos.tabla(18)} Puntos, diferencia de goles y racha de los últimos cinco</li>
-              <li>${Iconos.balon(18)} Tabla de goleadores con su club</li>
-              <li>${Iconos.trofeo(18)} Ataque más fuerte y defensa más sólida</li>
-              <li>${Iconos.candado(18)} Porterías a cero y rachas de victorias</li>
-              <li>${Iconos.calendario(18)} Calendario por jornadas con hora y marcador</li>
+              <li>${Iconos.tabla(18)} Tabla de posiciones y racha</li>
+              <li>${Iconos.balon(18)} Goleadores del torneo</li>
+              <li>${Iconos.calendario(18)} Calendario por jornadas</li>
             </ul>
           </div>
         </section>
@@ -239,7 +235,7 @@ export function vistaPortada() {
         <section class="seccion">
           <div class="seccion__cabecera revelar">
             <div>
-              <span class="seccion__ojo">Dos accesos</span>
+              <span class="seccion__ojo" style="--acento:var(--ldfaf-rojo)">Dos accesos</span>
               <h2 class="seccion__titulo seccion__titulo--grande">Para quién es</h2>
             </div>
           </div>
@@ -248,8 +244,7 @@ export function vistaPortada() {
               <span class="tarjeta-rol__icono">${Iconos.trofeo(22)}</span>
               <h3 class="tarjeta-rol__titulo">Organizas un torneo</h3>
               <p class="tarjeta-rol__texto">
-                Creas los torneos, abres las categorías, pones los plazos, registras los
-                clubes y ves todas las nóminas.
+                Creas torneos, abres categorías, pones los plazos y ves todas las nóminas.
               </p>
               <span class="tarjeta-rol__precio">Requiere membresía</span>
               <a class="boton boton--ancho" href="#/planes">Ver planes</a>
@@ -258,8 +253,7 @@ export function vistaPortada() {
               <span class="tarjeta-rol__icono">${Iconos.personas(22)}</span>
               <h3 class="tarjeta-rol__titulo">Diriges un club</h3>
               <p class="tarjeta-rol__texto">
-                Inscribes a tu club y cargas la nómina antes de que cierre el plazo.
-                La organización del torneo te entrega el acceso.
+                Cargas la nómina de tu club antes de que cierre el plazo.
               </p>
               <span class="tarjeta-rol__precio tarjeta-rol__precio--gratis">Gratis, siempre</span>
               <a class="boton boton--secundario boton--ancho" href="#/entrar">Entrar</a>
