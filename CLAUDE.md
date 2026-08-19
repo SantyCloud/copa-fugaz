@@ -127,7 +127,7 @@ Hay una sola cuenta en `data/usuarios.json`: la del organizador.
 
 | Usuario | Contraseña | Rol |
 |---|---|---|
-| `organizador` | `fugaz2026` | organizador, con membresía activa |
+| `fugazuser` | `fugazsecret` | organizador, con membresía activa |
 
 **Los accesos de los dirigentes los crea el organizador** al registrar cada club desde su
 panel: la web genera usuario y contraseña y los muestra para que se los pase. Se guardan

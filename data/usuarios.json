@@ -1,8 +1,8 @@
 [
   {
     "id": "u-organizador",
-    "usuario": "organizador",
-    "clave": "fugaz2026",
+    "usuario": "fugazuser",
+    "clave": "fugazsecret",
     "rol": "organizador",
     "nombre": "Organización LDFAF",
     "clubId": null,
