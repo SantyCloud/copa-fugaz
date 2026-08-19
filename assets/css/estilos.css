@@ -810,6 +810,164 @@ a.seccion__nota:hover { color: var(--neon); }
   .sesion { padding: 4px; border: 0; background: transparent; }
 }
 
+/* ═══════════════════════ portada pública (landing) ══════════════════════ */
+.portada {
+  border-bottom: 1px solid var(--borde);
+  padding: 44px 0 40px;
+  position: relative;
+  overflow: hidden;
+}
+.portada::before {
+  content: "";
+  position: absolute;
+  inset: -40% 20% auto -20%;
+  height: 420px;
+  background: radial-gradient(closest-side, rgba(52,200,92,.16), transparent);
+  pointer-events: none;
+}
+.portada__interior { position: relative; }
+
+.portada__titulo {
+  font-size: clamp(1.9rem, 8vw, 3.4rem);
+  line-height: 1.06;
+  margin-top: 4px;
+}
+.portada__titulo em { font-style: normal; color: var(--neon); }
+
+.portada__texto {
+  color: var(--texto-medio);
+  font-size: 1rem;
+  margin-top: 14px;
+  max-width: 46ch;
+}
+
+.portada__acciones { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 22px; }
+.portada__nota { color: var(--texto-tenue); font-size: .8rem; margin-top: 12px; }
+
+.boton--grande { padding: 13px 22px; font-size: .95rem; min-height: 48px; }
+
+/* ─────────────────────────── cómo funciona ─────────────────────────────── */
+.guia { display: grid; grid-template-columns: 1fr; gap: 12px; }
+
+.paso-guia {
+  display: flex;
+  gap: 13px;
+  padding: 15px;
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+}
+.paso-guia__numero {
+  flex-shrink: 0;
+  width: 28px; height: 28px;
+  display: grid; place-items: center;
+  border-radius: 999px;
+  background: var(--neon-hondo);
+  color: var(--neon);
+  box-shadow: inset 0 0 0 1px var(--neon-borde);
+  font-family: var(--fuente-num);
+  font-weight: 900; font-size: .8rem;
+}
+.paso-guia__titulo { font-size: .95rem; margin-bottom: 3px; }
+.paso-guia__texto { color: var(--texto-medio); font-size: .85rem; }
+
+/* ───────────────────────────── ventajas ────────────────────────────────── */
+.ventajas { display: grid; grid-template-columns: 1fr; gap: 12px; }
+
+.ventaja {
+  padding: 16px;
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+}
+.ventaja__icono { font-size: 1.5rem; display: block; margin-bottom: 8px; }
+.ventaja__titulo { font-size: .92rem; margin-bottom: 4px; }
+.ventaja__texto { color: var(--texto-medio); font-size: .84rem; }
+
+/* ────────────────────────────── planes ─────────────────────────────────── */
+.planes { display: grid; grid-template-columns: 1fr; gap: 14px; }
+
+.plan {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 22px 18px 18px;
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+}
+.plan--destacado {
+  border-color: var(--neon-borde);
+  box-shadow: var(--sombra-alta), inset 0 0 0 1px rgba(52,200,92,.12);
+}
+
+.plan__cinta {
+  position: absolute;
+  top: -1px; right: 16px;
+  transform: translateY(-50%);
+  background: var(--neon);
+  color: var(--sobre-neon);
+  font-size: .62rem; font-weight: 900;
+  text-transform: uppercase; letter-spacing: .09em;
+  padding: 4px 11px;
+  border-radius: 999px;
+}
+
+.plan__nombre { font-size: 1.05rem; }
+.plan__importe { display: flex; align-items: baseline; gap: 4px; margin: 10px 0 4px; }
+.plan__precio {
+  font-family: var(--fuente-num);
+  font-size: 2rem; font-weight: 900;
+  letter-spacing: -.04em;
+}
+.plan__periodo { color: var(--texto-tenue); font-size: .85rem; font-weight: 700; }
+.plan__resumen { color: var(--texto-medio); font-size: .85rem; margin-bottom: 14px; }
+
+.plan__lista { list-style: none; padding: 0; margin: 0 0 18px; flex: 1; }
+.plan__punto {
+  position: relative;
+  padding: 5px 0 5px 24px;
+  font-size: .85rem;
+  color: var(--texto-medio);
+}
+.plan__punto::before {
+  content: "✓";
+  position: absolute; left: 0; top: 5px;
+  color: var(--neon); font-weight: 900;
+}
+.plan__punto--no { color: var(--texto-tenue); }
+.plan__punto--no::before { content: "—"; color: var(--texto-tenue); }
+
+/* ──────────────────────── preguntas frecuentes ─────────────────────────── */
+.pregunta {
+  border-bottom: 1px solid var(--borde-suave);
+  padding: 11px 0;
+}
+.pregunta:last-child { border-bottom: 0; }
+.pregunta summary {
+  cursor: pointer;
+  font-weight: 700;
+  font-size: .89rem;
+  list-style: none;
+}
+.pregunta summary::-webkit-details-marker { display: none; }
+.pregunta summary::before { content: "＋ "; color: var(--neon); font-weight: 900; }
+.pregunta[open] summary::before { content: "－ "; }
+.pregunta p { color: var(--texto-medio); font-size: .85rem; padding: 8px 0 2px 18px; }
+
+@media (min-width: 640px) {
+  .portada { padding: 64px 0 56px; }
+  .guia { grid-template-columns: repeat(2, 1fr); }
+  .ventajas { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 900px) {
+  .guia { grid-template-columns: repeat(4, 1fr); }
+  .ventajas { grid-template-columns: repeat(3, 1fr); }
+  .planes { grid-template-columns: repeat(3, 1fr); align-items: stretch; }
+}
+
 /* ─────────────────────────────── varios ────────────────────────────────── */
 .vacio { text-align: center; padding: 40px 18px; color: var(--texto-tenue); }
 .vacio__icono { font-size: 1.9rem; margin-bottom: 8px; opacity: .5; }

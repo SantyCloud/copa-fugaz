@@ -26,7 +26,22 @@ let cargado = false;
 
 /** Datos que guardamos de la sesión. Nunca la contraseña. */
 function publico(u) {
-  return { id: u.id, usuario: u.usuario, nombre: u.nombre, rol: u.rol, clubId: u.clubId };
+  return {
+    id: u.id, usuario: u.usuario, nombre: u.nombre,
+    rol: u.rol, clubId: u.clubId,
+    membresia: u.membresia ? { ...u.membresia } : null,
+  };
+}
+
+/** Membresías activadas durante el demo. Se guardan aparte de las cuentas. */
+const CLAVE_MEMBRESIAS = 'copa-fugaz:membresias';
+
+function membresiasLocales() {
+  try {
+    return JSON.parse(localStorage.getItem(CLAVE_MEMBRESIAS) || '{}');
+  } catch {
+    return {};
+  }
 }
 
 export const Sesion = {
@@ -88,7 +103,12 @@ export const Sesion = {
     if (!guardada?.id) return null;
     // Si la cuenta ya no existe (por ejemplo cambió el JSON), la sesión cae.
     const vigente = usuarios.find((u) => u.id === guardada.id);
-    return vigente ? publico(vigente) : null;
+    if (!vigente) return null;
+
+    const s = publico(vigente);
+    const activada = membresiasLocales()[vigente.id];
+    if (activada) s.membresia = activada;
+    return s;
   },
 
   hayAlguien() {
@@ -119,5 +139,66 @@ export const Sesion = {
     if (!s) return false;
     if (s.rol === 'organizador') return true;
     return s.clubId === clubId;
+  },
+
+  /* ─────────────────────────── membresía ─────────────────────────────
+   * Organizar un torneo es de pago. Los clubes se inscriben gratis.
+   * En producción el estado lo dirá la pasarela de pago, no este archivo.
+   */
+
+  membresia() {
+    return this.actual()?.membresia || null;
+  },
+
+  /** ¿La cuenta puede administrar torneos ahora mismo? */
+  tieneMembresiaActiva() {
+    const m = this.membresia();
+    if (!m || m.estado !== 'activa') return false;
+    if (!m.vence) return true;
+    const [a, me, d] = String(m.vence).split('-').map(Number);
+    return new Date(a, me - 1, d, 23, 59, 59) >= new Date();
+  },
+
+  /**
+   * Activa un plan. En el demo es inmediato y no cobra nada.
+   * En producción esto lo confirmará la pasarela de pago mediante un webhook.
+   */
+  async activarPlan(planId, meses = 12) {
+    const s = this.actual();
+    if (!s) return { ok: false, motivo: 'Primero tienes que entrar.' };
+    if (s.rol !== 'organizador') {
+      return { ok: false, motivo: 'Las membresías son para cuentas de organizador.' };
+    }
+
+    const vence = new Date();
+    vence.setMonth(vence.getMonth() + meses);
+    const membresia = {
+      plan: planId,
+      estado: 'activa',
+      vence: vence.toISOString().slice(0, 10),
+    };
+
+    try {
+      const todas = membresiasLocales();
+      todas[s.id] = membresia;
+      localStorage.setItem(CLAVE_MEMBRESIAS, JSON.stringify(todas));
+    } catch {
+      /* modo incógnito: vale para la sesión actual */
+    }
+    return { ok: true, membresia };
+  },
+
+  /** Devuelve la cuenta al estado sin membresía (para repetir la demostración). */
+  async cancelarPlan() {
+    const s = this.actual();
+    if (!s) return { ok: false };
+    try {
+      const todas = membresiasLocales();
+      todas[s.id] = { plan: null, estado: 'ninguna', vence: null };
+      localStorage.setItem(CLAVE_MEMBRESIAS, JSON.stringify(todas));
+    } catch {
+      /* nada */
+    }
+    return { ok: true };
   },
 };

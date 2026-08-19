@@ -102,6 +102,25 @@ El sistema guarda **nombre, apellidos, edad y número de cédula**, y hay catego
   cédulas auténticas quedaría expuesto y cacheado para siempre aunque se borre después.
 - En producción, esos datos van en Supabase con RLS, nunca en el repositorio.
 
+## Modelo de negocio
+
+Es un **SaaS de gestión de torneos**, no la web de una sola liga:
+
+- **Organizar un torneo es de pago.** Crear torneos, abrir categorías y fijar los plazos
+  requiere una membresía activa.
+- **Inscribir un club es gratis.** El organizador da el acceso a cada dirigente.
+- **La liga es pública.** Clasificación, calendario, clubes y goleadores se ven sin cuenta.
+
+El recorrido es el de cualquier SaaS: **portada que explica el producto → entrar →
+planes si hace falta → panel**. El panel del organizador no se enseña a quien no ha pagado.
+
+⚠️ **Los precios de `data/planes.json` son de ejemplo.** Hay que confirmarlos con el
+cliente antes de presentarlo. Están en un JSON aparte justo para poder cambiarlos sin
+tocar código.
+
+En el demo, contratar activa la membresía al momento y no cobra nada. En producción lo
+confirmará la pasarela de pago mediante un webhook contra el servidor, nunca el navegador.
+
 ## Acceso (demo) — no es seguridad
 
 Hay login para que el cliente vea el flujo completo, pero **no protege nada**:
@@ -114,11 +133,15 @@ Hay login para que el cliente vea el flujo completo, pero **no protege nada**:
 
 | Usuario | Contraseña | Rol | Ve |
 |---|---|---|---|
-| `organizador` | `fugaz2026` | organizador | toda la liga |
+| `organizador` | `fugaz2026` | organizador **con** membresía | toda la liga |
+| `nuevo` | `nuevo2026` | organizador **sin** membresía | ve la puerta de pago |
 | `riberas`, `valdehierro`, `penalba`, `sanroque`, `lamata`, `molinos`, `fuentevieja`, `elrobledal`, `torrecilla`, `vegaalta` | `club2026` | dirigente | solo su club |
 
-Qué se puede ver sin entrar: clasificación, calendario, clubes y goleadores. La liga es
-pública, como en cualquier web de competición.
+Qué se puede ver sin entrar: la portada, los planes y la liga (clasificación, calendario,
+clubes y goleadores).
+
+La cuenta `nuevo` existe para poder enseñar el muro de pago: entra, no tiene membresía y
+la web le lleva a los planes en vez de al panel.
 
 **`assets/js/sesion.js` es el único archivo que hay que reescribir** para pasar a Supabase
 Auth. El resto del sitio solo llama a `Sesion.actual()`, `Sesion.esOrganizador()` y
@@ -140,11 +163,14 @@ Todo el acceso a datos pasa por **`assets/js/data.js`**. Es el único punto que 
 tocar para migrar a Supabase — el resto del sitio no se entera de dónde salen los datos.
 
 ```
-index.html                una sola página, router por hash (#/, #/inscripcion, ...)
+index.html                una sola página, router por hash
+                          #/ portada · #/planes · #/entrar · #/liga · #/inscripcion · #/organizador
 data/*.json               datos semilla
 assets/js/data.js         ← CAPA DE DATOS + REGLAS DE NEGOCIO. Punto de migración.
 assets/js/sesion.js       ← ACCESO Y ROLES. Punto de migración a Supabase Auth.
 assets/js/acceso.js       pantalla de entrar
+assets/js/inicio.js       portada pública que explica el producto
+assets/js/membresia.js    planes y muro de pago del organizador
 assets/js/inscripcion.js  portal del dirigente (3 pasos: club → categoría → nómina)
 assets/js/organizador.js  panel del organizador (torneos, categorías, plazos, inscritos)
 assets/js/liga.js         cálculo de clasificación y goleadores
@@ -174,7 +200,8 @@ inscripciones.json club × categoría → estado (borrador | enviada | aprobada)
 jugadores.json     jugador → inscripcionId (y equipoId si compite en la liga en curso)
 partidos.json      calendario y resultados
 torneo.json        descriptor de la competición que se está jugando
-usuarios.json      cuentas del demo (organizador y un dirigente por club)
+usuarios.json      cuentas del demo, con su estado de membresía
+planes.json        planes y precios (PRECIOS DE EJEMPLO, confirmar con el cliente)
 ```
 
 `equipoId` en `jugadores.json` se mantiene aparte de `inscripcionId` por compatibilidad

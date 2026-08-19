@@ -123,7 +123,14 @@ export function vistaAcceso(params = {}) {
       const res = await Sesion.entrar($('#a-usuario').value, $('#a-clave').value);
       if (!res.ok) return avisar(res.motivo);
       // A donde iba antes de que le pidiéramos entrar, o a su sitio por defecto.
-      navegar(destino || (res.sesion.rol === 'organizador' ? '#/organizador' : '#/inscripcion'));
+      // Un organizador sin membresía va a los planes: el panel le estaría cerrado.
+      const porDefecto =
+        res.sesion.rol !== 'organizador'
+          ? '#/inscripcion'
+          : Sesion.tieneMembresiaActiva()
+          ? '#/organizador'
+          : '#/planes';
+      navegar(destino || porDefecto);
     };
 
     $('#btn-entrar').addEventListener('click', entrar);
