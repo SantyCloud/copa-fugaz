@@ -131,7 +131,7 @@ function listaTorneos(torneos) {
             <span class="categoria-ficha__plazo">${escapar(detalle)}</span>`;
 
           return plazo.abierto
-            ? `<a class="categoria-ficha categoria-ficha--${estado}" href="#/entrar">${cuerpo}</a>`
+            ? `<a class="categoria-ficha categoria-ficha--${estado}" href="#/registro">${cuerpo}</a>`
             : `<span class="categoria-ficha categoria-ficha--${estado}">${cuerpo}</span>`;
         })
         .join('');
@@ -162,7 +162,7 @@ export function vistaPortada() {
   // La portada no vende acceso: lleva a inscribirse o a mirar los torneos.
   const accion = !sesion
     ? `<div class="heroe__botones">
-         <a class="boton boton--grande" href="#/entrar">Inscribir mi club</a>
+         <a class="boton boton--grande" href="#/registro">Inscribir mi club</a>
          <button type="button" class="boton boton--fantasma boton--grande" id="btn-ver-torneos">Ver los torneos</button>
        </div>`
     : sesion.rol === 'dirigente'

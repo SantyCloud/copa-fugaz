@@ -129,9 +129,14 @@ Hay una sola cuenta en `data/usuarios.json`: la del organizador.
 |---|---|---|
 | `fugazuser` | `fugazsecret` | organizador, con membresía activa |
 
-**Los accesos de los dirigentes los crea el organizador** al registrar cada club desde su
-panel: la web genera usuario y contraseña y los muestra para que se los pase. Se guardan
-en el navegador (`copa-fugaz:accesos`).
+Los dirigentes tienen **dos caminos** para tener cuenta:
+
+1. **Se registran ellos mismos** en `#/registro`: nombre del club, su nombre, teléfono,
+   usuario y contraseña. Un solo formulario y quedan dentro. Es la vía normal.
+2. **El organizador se la crea** al registrar el club desde su panel: la web genera
+   usuario y contraseña y los enseña para que se los pase.
+
+Ambos accesos se guardan en el navegador (`copa-fugaz:accesos`).
 
 ⚠️ **Todavía no es seguridad.** La contraseña del organizador está en texto plano en un
 repositorio público y todo se comprueba en el navegador. **Cambiar esa contraseña antes de

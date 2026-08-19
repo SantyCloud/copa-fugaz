@@ -1445,6 +1445,24 @@ a.categoria-ficha--pronto:hover { border-color: var(--aviso); }
 }
 .acceso__pie a { color: var(--neon); font-weight: 700; }
 
+.separador {
+  border: 0;
+  border-top: 1px solid var(--borde-suave);
+  margin: 22px 0 18px;
+}
+
+.acceso__pregunta {
+  text-align: center;
+  font-size: .85rem;
+  font-weight: 700;
+  color: var(--texto-medio);
+  margin-bottom: 11px;
+}
+
+.campo-clave { display: flex; gap: 8px; align-items: stretch; }
+.campo-clave .entrada { flex: 1; }
+.campo-clave .boton { flex-shrink: 0; min-height: auto; }
+
 .credencial { display: flex; gap: 6px; flex-wrap: wrap; flex-shrink: 0; }
 .credencial__par {
   font-family: var(--fuente-num);
