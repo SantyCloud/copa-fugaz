@@ -900,7 +900,7 @@ a.seccion__nota:hover { color: var(--neon); }
   max-width: 46ch;
 }
 
-.heroe__acciones { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 26px; }
+.heroe__acciones { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 22px; }
 
 .heroe__sellos {
   list-style: none;
@@ -922,6 +922,77 @@ a.seccion__nota:hover { color: var(--neon); }
 
 .hero__etiqueta { display: inline-flex; align-items: center; gap: 7px; }
 .hero__etiqueta svg { flex-shrink: 0; }
+
+/* ─────────────────────── las dos puertas del héroe ─────────────────────── */
+/* Quien entra elige camino en el primer vistazo, sin leerse la página. */
+.puertas {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 11px;
+  margin-top: 26px;
+}
+
+.puerta {
+  display: block;
+  padding: 17px 17px 15px;
+  background: var(--superficie);
+  border: 1px solid var(--borde-vivo);
+  border-radius: var(--radio);
+  transition: transform .17s, border-color .17s, background .17s;
+}
+.puerta:hover {
+  transform: translateY(-3px);
+  background: var(--superficie-alta);
+  border-color: color-mix(in srgb, var(--neon) 45%, var(--borde-vivo));
+}
+
+.puerta--principal {
+  background: linear-gradient(158deg, var(--neon-hondo), var(--superficie));
+  border-color: var(--neon-borde);
+}
+.puerta--principal:hover { border-color: var(--neon); }
+
+.puerta__icono {
+  display: grid; place-items: center;
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--neon) 16%, transparent);
+  color: color-mix(in srgb, var(--neon) 55%, #ffffff);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--neon) 38%, transparent);
+  margin-bottom: 12px;
+}
+.puerta:not(.puerta--principal) .puerta__icono {
+  background: color-mix(in srgb, var(--ldfaf-azul) 20%, transparent);
+  color: color-mix(in srgb, var(--ldfaf-azul) 52%, #ffffff);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ldfaf-azul) 42%, transparent);
+}
+
+.puerta__titulo {
+  display: block;
+  font-size: 1rem; font-weight: 800;
+  letter-spacing: -.02em;
+  margin-bottom: 5px;
+}
+.puerta__texto {
+  display: block;
+  font-size: .84rem;
+  color: var(--texto-medio);
+  margin-bottom: 12px;
+}
+.puerta__accion {
+  display: inline-block;
+  font-size: .84rem; font-weight: 800;
+  color: var(--neon);
+}
+.puerta:not(.puerta--principal) .puerta__accion {
+  color: color-mix(in srgb, var(--ldfaf-azul) 55%, #ffffff);
+}
+
+.heroe__botones { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 26px; }
+
+@media (min-width: 560px) {
+  .puertas { grid-template-columns: 1fr 1fr; }
+}
 
 /* ─────────────────── maqueta del producto en el héroe ──────────────────── */
 .heroe__maqueta { position: relative; will-change: transform; }

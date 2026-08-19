@@ -101,14 +101,31 @@ export function vistaPortada() {
   const torneos = Datos.getTorneos();
   const categorias = Datos.getCategorias();
 
+  // Quien llega sin sesión elige puerta: la mayoría son dirigentes a los que
+  // les han pasado el enlace, así que su camino va primero y bien visible.
+  const puertas = `
+    <div class="puertas">
+      <a class="puerta puerta--principal" href="#/entrar">
+        <span class="puerta__icono">${Iconos.personas(22)}</span>
+        <span class="puerta__titulo">Vengo a inscribir mi club</span>
+        <span class="puerta__texto">Entra con el acceso que te dio la organización de tu torneo.</span>
+        <span class="puerta__accion">Entrar &rarr;</span>
+      </a>
+      <a class="puerta" href="#/planes">
+        <span class="puerta__icono">${Iconos.trofeo(22)}</span>
+        <span class="puerta__titulo">Quiero organizar un torneo</span>
+        <span class="puerta__texto">Crea el torneo, abre categorías y controla los plazos.</span>
+        <span class="puerta__accion">Ver planes &rarr;</span>
+      </a>
+    </div>`;
+
   const accion = !sesion
-    ? `<a class="boton boton--grande" href="#/entrar">Entrar al panel</a>
-       <a class="boton boton--fantasma boton--grande" href="#/planes">Ver planes</a>`
+    ? puertas
     : sesion.rol === 'dirigente'
-    ? `<a class="boton boton--grande" href="#/inscripcion">Ir a mi club</a>`
+    ? `<div class="heroe__botones"><a class="boton boton--grande" href="#/inscripcion">Ir a mi club</a></div>`
     : Sesion.tieneMembresiaActiva()
-    ? `<a class="boton boton--grande" href="#/organizador">Ir a mi panel</a>`
-    : `<a class="boton boton--grande" href="#/planes">Activar mi membresía</a>`;
+    ? `<div class="heroe__botones"><a class="boton boton--grande" href="#/organizador">Ir a mi panel</a></div>`
+    : `<div class="heroe__botones"><a class="boton boton--grande" href="#/planes">Activar mi membresía</a></div>`;
 
   // Cinta con las categorías, duplicada para que el bucle no tenga costura.
   const nombresCat = [...new Set(categorias.map((c) => c.nombre))];
@@ -139,7 +156,7 @@ export function vistaPortada() {
             Cada club carga su nómina desde el móvil.
           </p>
 
-          <div class="heroe__acciones">${accion}</div>
+          ${accion}
 
           <ul class="heroe__sellos">
             <li>${Iconos.rayo(15)} Listo en minutos</li>
@@ -209,8 +226,6 @@ export function vistaPortada() {
             ${ventaja(Iconos.cedula(22), 'azul', 'Sin fichas repetidas', 'Una cédula no puede estar en dos clubes.')}
             ${ventaja(Iconos.edad(22), 'morado', 'Cada uno en su edad', 'Un chico de 15 no entra en Sub-12.')}
             ${ventaja(Iconos.tabla(22), 'rojo', 'Tablas que no se discuten', 'Salen de los resultados. Una sola versión.')}
-            ${ventaja(Iconos.movil(22), 'verde', 'Pensada para el móvil', 'Sin instalar nada. Se usa en el navegador.')}
-            ${ventaja(Iconos.globo(22), 'azul', 'Página pública', 'Jugadores y familias la ven sin cuenta.')}
           </div>
         </section>
 
@@ -229,35 +244,6 @@ export function vistaPortada() {
               <li>${Iconos.balon(18)} Goleadores del torneo</li>
               <li>${Iconos.calendario(18)} Calendario por jornadas</li>
             </ul>
-          </div>
-        </section>
-
-        <section class="seccion">
-          <div class="seccion__cabecera revelar">
-            <div>
-              <span class="seccion__ojo" style="--acento:var(--ldfaf-rojo)">Dos accesos</span>
-              <h2 class="seccion__titulo seccion__titulo--grande">Para quién es</h2>
-            </div>
-          </div>
-          <div class="dos-columnas">
-            <div class="tarjeta-rol revelar" style="--acento:var(--ldfaf-verde)">
-              <span class="tarjeta-rol__icono">${Iconos.trofeo(22)}</span>
-              <h3 class="tarjeta-rol__titulo">Organizas un torneo</h3>
-              <p class="tarjeta-rol__texto">
-                Creas torneos, abres categorías, pones los plazos y ves todas las nóminas.
-              </p>
-              <span class="tarjeta-rol__precio">Requiere membresía</span>
-              <a class="boton boton--ancho" href="#/planes">Ver planes</a>
-            </div>
-            <div class="tarjeta-rol revelar" style="--acento:var(--ldfaf-azul)">
-              <span class="tarjeta-rol__icono">${Iconos.personas(22)}</span>
-              <h3 class="tarjeta-rol__titulo">Diriges un club</h3>
-              <p class="tarjeta-rol__texto">
-                Cargas la nómina de tu club antes de que cierre el plazo.
-              </p>
-              <span class="tarjeta-rol__precio tarjeta-rol__precio--gratis">Gratis, siempre</span>
-              <a class="boton boton--secundario boton--ancho" href="#/entrar">Entrar</a>
-            </div>
           </div>
         </section>
 
