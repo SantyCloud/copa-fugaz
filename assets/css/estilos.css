@@ -1644,6 +1644,9 @@ a.cat-ficha:hover {
   background: var(--fondo-alt);
 }
 .pie__fila { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.pie__enlaces { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+.pie__enlaces a { color: var(--texto-medio); font-weight: 600; }
+.pie__enlaces a:hover { color: var(--neon); }
 
 /* ══════════════════════ a partir de tablet y escritorio ═══════════════════ */
 @media (min-width: 900px) {
