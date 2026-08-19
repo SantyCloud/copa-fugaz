@@ -858,10 +858,11 @@ a.seccion__nota:hover { color: var(--neon); }
 }
 
 .heroe__titulo {
-  font-size: clamp(2.1rem, 8.4vw, 3.7rem);
-  line-height: 1.02;
-  letter-spacing: -.04em;
+  font-size: clamp(2rem, 7vw, 3.05rem);
+  line-height: 1.06;
+  letter-spacing: -.035em;
   margin-top: 12px;
+  text-wrap: balance;
 }
 
 /* La frase que se escribe va en su propia línea con alto reservado,
@@ -1142,9 +1143,9 @@ a.seccion__nota:hover { color: var(--neon); }
   display: grid; place-items: center;
   width: 30px; height: 30px;
   border-radius: 9px;
-  background: color-mix(in srgb, var(--acento, var(--neon)) 18%, transparent);
-  color: var(--acento, var(--neon));
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--acento, var(--neon)) 40%, transparent);
+  background: color-mix(in srgb, var(--acento, var(--neon)) 22%, transparent);
+  color: color-mix(in srgb, var(--acento, var(--neon)) 45%, #ffffff);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--acento, var(--neon)) 48%, transparent);
   font-family: var(--fuente-num);
   font-weight: 900; font-size: .82rem;
   margin-bottom: 13px;
@@ -1171,9 +1172,9 @@ a.seccion__nota:hover { color: var(--neon); }
   display: grid; place-items: center;
   width: 42px; height: 42px;
   border-radius: 12px;
-  background: color-mix(in srgb, var(--acento, var(--neon)) 14%, transparent);
-  color: var(--acento, var(--neon));
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--acento, var(--neon)) 32%, transparent);
+  background: color-mix(in srgb, var(--acento, var(--neon)) 18%, transparent);
+  color: color-mix(in srgb, var(--acento, var(--neon)) 50%, #ffffff);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--acento, var(--neon)) 40%, transparent);
   margin-bottom: 13px;
 }
 .ventaja__titulo { font-size: .94rem; margin-bottom: 5px; }
@@ -1223,8 +1224,9 @@ a.seccion__nota:hover { color: var(--neon); }
   display: grid; place-items: center;
   width: 44px; height: 44px;
   border-radius: 13px;
-  background: color-mix(in srgb, var(--acento, var(--neon)) 15%, transparent);
-  color: var(--acento, var(--neon));
+  background: color-mix(in srgb, var(--acento, var(--neon)) 19%, transparent);
+  color: color-mix(in srgb, var(--acento, var(--neon)) 48%, #ffffff);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--acento, var(--neon)) 40%, transparent);
   margin-bottom: 14px;
 }
 .tarjeta-rol__titulo { font-size: 1.05rem; margin-bottom: 7px; }
@@ -1366,7 +1368,7 @@ a.seccion__nota:hover { color: var(--neon); }
 
 @media (min-width: 700px) {
   .heroe { padding: 62px 0 0; }
-  .heroe__interior { grid-template-columns: 1.08fr .92fr; gap: 44px; padding-bottom: 48px; }
+  .heroe__interior { grid-template-columns: 1.14fr .86fr; gap: 40px; padding-bottom: 48px; }
   .cifras { grid-template-columns: repeat(4, 1fr); }
   .cifra-bloque__valor { font-size: 1.75rem; }
   .guia { grid-template-columns: repeat(2, 1fr); }
