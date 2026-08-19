@@ -30,7 +30,7 @@ import { vistaEstadisticas } from './estadisticas.js';
 import { activarAnimaciones, detenerAnimaciones } from './animaciones.js';
 
 /** Se sube a mano en cada publicación. Aparece en el pie de la web. */
-const VERSION = 'v8';
+const VERSION = 'v9';
 
 /* ─────────────────────────────── rutas ─────────────────────────────────── */
 
