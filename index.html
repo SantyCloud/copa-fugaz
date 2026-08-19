@@ -28,14 +28,19 @@
       </a>
 
       <nav class="nav" aria-label="Secciones del sitio">
-        <a class="nav__enlace" data-nav="inscripcion" href="#/inscripcion">Inscripción</a>
-        <a class="nav__enlace" data-nav="organizador" href="#/organizador">Organizador</a>
         <a class="nav__enlace" data-nav="inicio"      href="#/">Clasificación</a>
         <a class="nav__enlace" data-nav="calendario"  href="#/calendario">Calendario</a>
         <a class="nav__enlace" data-nav="equipos"     href="#/equipos">Clubes</a>
         <a class="nav__enlace" data-nav="goleadores"  href="#/goleadores">Goleadores</a>
-        <a class="nav__enlace" data-nav="panel"       href="#/panel">Resultados</a>
+        <a class="nav__enlace oculto" data-nav="inscripcion" data-solo="sesion"
+           href="#/inscripcion">Mi club</a>
+        <a class="nav__enlace oculto" data-nav="organizador" data-solo="organizador"
+           href="#/organizador">Organizador</a>
+        <a class="nav__enlace oculto" data-nav="panel" data-solo="organizador"
+           href="#/panel">Resultados</a>
       </nav>
+
+      <div id="caja-sesion" class="caja-sesion"></div>
     </div>
   </header>
 

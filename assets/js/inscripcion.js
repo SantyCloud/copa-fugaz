@@ -12,10 +12,15 @@
  */
 
 import { Datos } from './data.js';
+import { Sesion } from './sesion.js';
 import { escapar, escudo, formatearFecha } from './ui.js';
 
 function barraPasos(paso) {
-  const pasos = ['Club', 'Torneo y categoría', 'Nómina'];
+  // El dirigente entra ya identificado con su club: para él solo hay dos pasos.
+  const pasos = Sesion.esDirigente()
+    ? ['Torneo y categoría', 'Nómina']
+    : ['Club', 'Torneo y categoría', 'Nómina'];
+  if (Sesion.esDirigente()) paso -= 1;
   return `
     <div class="pasos">
       ${pasos
@@ -224,7 +229,7 @@ function pasoCategoria(club) {
 
   const html = `
     <main class="principal"><div class="contenedor">
-      <a class="volver" href="#/inscripcion">← Cambiar de club</a>
+      ${Sesion.esOrganizador() ? '<a class="volver" href="#/inscripcion">← Cambiar de club</a>' : ''}
       ${barraPasos(2)}
 
       <div class="ficha">
@@ -453,10 +458,31 @@ function pasoNomina(club, categoria, inscripcion) {
 /* ─────────────────────────────── entrada ───────────────────────────────── */
 
 export function vistaInscripcion(params = {}) {
-  if (!params.clubId) return pasoClub();
+  // Un dirigente solo puede tocar su club, venga lo que venga en la dirección.
+  const propio = Sesion.clubDeLaSesion();
+  const clubId = propio || params.clubId;
 
-  const club = Datos.getClub(params.clubId);
+  // Sin club: el organizador elige uno; el dirigente nunca llega aquí.
+  if (!clubId) return pasoClub();
+
+  const club = Datos.getClub(clubId);
   if (!club) return pasoClub();
+
+  if (!Sesion.puedeGestionarClub(club.id)) {
+    return {
+      html: `<main class="principal"><div class="contenedor" style="max-width:520px">
+        <div class="aviso aviso--error">
+          <span class="aviso__icono">🔒</span>
+          <div><strong>Ese club no es el tuyo.</strong>
+          <p style="margin-top:6px">Cada dirigente solo puede ver e inscribir a los
+          jugadores de su propio club.</p></div>
+        </div>
+        <div class="acciones" style="border:0">
+          <a class="boton" href="#/inscripcion">Ir a mi club</a>
+        </div>
+      </div></main>`,
+    };
+  }
 
   if (!params.categoriaId) return pasoCategoria(club);
 

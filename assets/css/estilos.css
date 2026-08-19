@@ -757,6 +757,59 @@ a.seccion__nota:hover { color: var(--neon); }
 .paso--hecho { color: var(--exito); border-color: rgba(100,214,122,.35); }
 .paso--hecho .paso__numero { background: var(--exito); color: #08110a; }
 
+/* ─────────────────────────── sesión y acceso ───────────────────────────── */
+.caja-sesion { flex-shrink: 0; display: flex; align-items: center; }
+
+.sesion {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 4px 4px 4px 11px;
+  border: 1px solid var(--borde);
+  border-radius: 999px;
+  background: var(--superficie);
+}
+
+.sesion__datos { display: flex; flex-direction: column; line-height: 1.15; min-width: 0; }
+.sesion__nombre {
+  font-size: .78rem; font-weight: 800;
+  max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.sesion__rol {
+  font-size: .6rem; font-weight: 800;
+  text-transform: uppercase; letter-spacing: .1em;
+  color: var(--neon);
+}
+
+/* Botones de cuenta de la pantalla de acceso */
+.cuenta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 10px;
+  border: 1px solid transparent;
+  border-radius: var(--radio-chico);
+  background: transparent;
+  color: var(--texto);
+  text-align: left;
+  transition: background .13s, border-color .13s;
+}
+.cuenta:hover { background: var(--superficie-alta); border-color: var(--borde-vivo); }
+
+.cuenta__texto { display: flex; flex-direction: column; line-height: 1.2; min-width: 0; }
+.cuenta__nombre { font-size: .86rem; font-weight: 700; }
+.cuenta__usuario {
+  font-size: .72rem;
+  color: var(--texto-tenue);
+  font-family: var(--fuente-num);
+}
+
+@media (max-width: 560px) {
+  .sesion__datos { display: none; }
+  .sesion { padding: 4px; border: 0; background: transparent; }
+}
+
 /* ─────────────────────────────── varios ────────────────────────────────── */
 .vacio { text-align: center; padding: 40px 18px; color: var(--texto-tenue); }
 .vacio__icono { font-size: 1.9rem; margin-bottom: 8px; opacity: .5; }
