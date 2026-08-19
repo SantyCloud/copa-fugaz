@@ -119,14 +119,20 @@ button { font: inherit; cursor: pointer; }
   border-bottom: 1px solid var(--borde);
 }
 
+/* En móvil la cabecera va en dos filas: marca + botón arriba, y la navegación
+   debajo a lo ancho. En una sola fila la navegación se comía el nombre de la
+   marca. A partir de 900 px vuelve a caber todo en una línea. */
 .cabecera__fila {
   display: flex;
   align-items: center;
-  gap: 12px;
-  min-height: 58px;
+  flex-wrap: wrap;
+  gap: 10px;
+  min-height: 56px;
+  padding-top: 8px;
+  padding-bottom: 8px;
 }
 
-.marca { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.marca { display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1 1 auto; }
 
 .marca__escudo {
   width: 36px; height: 36px;
@@ -184,8 +190,11 @@ button { font: inherit; cursor: pointer; }
 
 .nav {
   display: flex;
-  gap: 2px;
-  margin-left: auto;
+  gap: 4px;
+  order: 3;
+  flex: 1 0 100%;
+  margin: 0 -16px;
+  padding: 0 16px 2px;
   overflow-x: auto;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
@@ -758,7 +767,7 @@ a.seccion__nota:hover { color: var(--neon); }
 .paso--hecho .paso__numero { background: var(--exito); color: #08110a; }
 
 /* ─────────────────────────── sesión y acceso ───────────────────────────── */
-.caja-sesion { flex-shrink: 0; display: flex; align-items: center; }
+.caja-sesion { flex: 0 0 auto; margin-left: auto; display: flex; align-items: center; }
 
 .sesion {
   display: flex;
@@ -869,8 +878,13 @@ a.seccion__nota:hover { color: var(--neon); }
    así el texto de abajo no salta cuando cambia de longitud. */
 .heroe__linea { display: block; min-height: 1.05em; }
 .heroe__variable {
-  color: var(--neon);
-  border-right: .055em solid transparent;
+  background: linear-gradient(96deg, var(--neon), #4fa8f0);
+  -webkit-background-clip: text;
+          background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: var(--neon);            /* respaldo si no hay soporte */
+  border-right: .055em solid var(--neon);
+  border-right-color: transparent;
   padding-right: .04em;
 }
 .heroe__variable.escribiendo {
@@ -1088,13 +1102,24 @@ a.seccion__nota:hover { color: var(--neon); }
   gap: 1px;
   background: var(--borde-suave);
 }
-.cifra-bloque { background: var(--fondo); padding: 17px 14px; text-align: center; }
+.cifra-bloque {
+  position: relative;
+  background: var(--fondo);
+  padding: 18px 14px 16px;
+  text-align: center;
+}
+.cifra-bloque::before {
+  content: "";
+  position: absolute; inset: 0 0 auto 0; height: 2px;
+  background: var(--acento, var(--neon));
+  opacity: .8;
+}
 .cifra-bloque__valor {
   display: block;
   font-family: var(--fuente-num);
   font-size: 1.5rem; font-weight: 900;
   letter-spacing: -.04em;
-  color: var(--neon);
+  color: color-mix(in srgb, var(--acento, var(--neon)) 48%, #ffffff);
 }
 .cifra-bloque__a { color: var(--texto-tenue); margin: 0 6px; font-size: .85rem; }
 .cifra-bloque__etiqueta {
@@ -1111,11 +1136,18 @@ a.seccion__nota:hover { color: var(--neon); }
 
 /* ─────────────────────── encabezados de sección ────────────────────────── */
 .seccion__ojo {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   font-size: .64rem; font-weight: 900;
   text-transform: uppercase; letter-spacing: .16em;
-  color: var(--neon);
-  margin-bottom: 8px;
+  color: color-mix(in srgb, var(--acento, var(--neon)) 55%, #ffffff);
+  margin-bottom: 9px;
+}
+.seccion__ojo::before {
+  content: "";
+  width: 18px; height: 2px; border-radius: 2px;
+  background: var(--acento, var(--neon));
 }
 .seccion__titulo--grande {
   font-size: clamp(1.35rem, 5.2vw, 2rem);
@@ -1425,6 +1457,11 @@ a.seccion__nota:hover { color: var(--neon); }
 .pie__fila { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 
 /* ══════════════════════ a partir de tablet y escritorio ═══════════════════ */
+@media (min-width: 900px) {
+  .cabecera__fila { flex-wrap: nowrap; padding-top: 0; padding-bottom: 0; }
+  .nav { order: 0; flex: 0 1 auto; margin: 0 0 0 auto; padding: 0; }
+}
+
 @media (min-width: 640px) {
   .contenedor { padding: 0 20px; }
   .cabecera__fila { min-height: 64px; gap: 16px; }
