@@ -24,11 +24,17 @@ import { vistaPanel } from './panel.js';
 import { vistaInscripcion } from './inscripcion.js';
 import { vistaOrganizador } from './organizador.js';
 import { vistaAcceso, vistaSinPermiso } from './acceso.js';
+import { vistaPortada } from './inicio.js';
+import { cargarPlanes, vistaPlanes, vistaMembresiaRequerida } from './membresia.js';
 
 /* ─────────────────────────────── rutas ─────────────────────────────────── */
 
 const RUTAS = [
-  { patron: /^\/?$/, vista: vistaInicio, nav: 'inicio' },
+  { patron: /^\/?$/, vista: vistaPortada, nav: 'portada' },
+
+  { patron: /^\/liga$/, vista: vistaInicio, nav: 'liga' },
+
+  { patron: /^\/planes$/, vista: vistaPlanes, nav: 'planes' },
 
   { patron: /^\/entrar(?:\/(.+))?$/, vista: vistaAcceso, nav: 'entrar',
     params: (m) => ({ destino: m[1] }) },
@@ -38,7 +44,7 @@ const RUTAS = [
     params: (m) => ({ clubId: m[1], categoriaId: m[2] }) },
 
   { patron: /^\/organizador(?:\/([\w-]+))?$/,
-    vista: vistaOrganizador, nav: 'organizador', requiere: 'organizador',
+    vista: vistaOrganizador, nav: 'organizador', requiere: 'membresia',
     params: (m) => ({ categoriaId: m[1] }) },
 
   { patron: /^\/calendario(?:\/(\d+))?$/,
@@ -53,7 +59,7 @@ const RUTAS = [
   { patron: /^\/goleadores$/, vista: vistaGoleadores, nav: 'goleadores' },
 
   { patron: /^\/panel(?:\/(\d+))?$/, vista: vistaPanel, nav: 'panel',
-    requiere: 'organizador',
+    requiere: 'membresia',
     params: (m) => ({ id: m[1] }) },
 ];
 
@@ -78,11 +84,11 @@ function marcarNavActiva(nombre) {
 
 /** Enseña u oculta los enlaces según quién haya entrado. */
 function ajustarNav() {
-  const esOrg = Sesion.esOrganizador();
-  const dentro = Sesion.hayAlguien();
+  const conPanel = Sesion.esOrganizador() && Sesion.tieneMembresiaActiva();
+  const dirigente = Sesion.esDirigente();
   document.querySelectorAll('.nav__enlace[data-solo]').forEach((a) => {
     const solo = a.dataset.solo;
-    const visible = solo === 'organizador' ? esOrg : dentro;
+    const visible = solo === 'organizador' ? conPanel : dirigente;
     a.classList.toggle('oculto', !visible);
   });
 }
@@ -149,11 +155,17 @@ function comprobarPermiso(ruta) {
     return 'redirigido';
   }
 
-  if (ruta.requiere === 'organizador' && !Sesion.esOrganizador()) {
+  const soloOrganizador = ruta.requiere === 'organizador' || ruta.requiere === 'membresia';
+  if (soloOrganizador && !Sesion.esOrganizador()) {
     return vistaSinPermiso(
-      'Esta parte es del organizador de la liga. Con tu cuenta de dirigente puedes ' +
-        'inscribir a los jugadores de tu club desde la sección Inscripción.'
+      'Esta parte es de quien organiza el torneo. Con tu cuenta de dirigente puedes ' +
+        'inscribir a los jugadores de tu club desde la sección Mi club.'
     );
+  }
+
+  // Organizar torneos es de pago; inscribir un club, no.
+  if (ruta.requiere === 'membresia' && !Sesion.tieneMembresiaActiva()) {
+    return vistaMembresiaRequerida();
   }
 
   return null;
@@ -198,7 +210,7 @@ function pintar() {
 
 async function iniciar() {
   try {
-    await Promise.all([Datos.cargar(), Sesion.cargar()]);
+    await Promise.all([Datos.cargar(), Sesion.cargar(), cargarPlanes()]);
   } catch (error) {
     console.error(error);
     pintarError(

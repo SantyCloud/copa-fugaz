@@ -5,7 +5,25 @@
     "clave": "fugaz2026",
     "rol": "organizador",
     "nombre": "Organizador de la Liga",
-    "clubId": null
+    "clubId": null,
+    "membresia": {
+      "plan": "liga",
+      "estado": "activa",
+      "vence": "2027-08-18"
+    }
+  },
+  {
+    "id": "u-organizador-nuevo",
+    "usuario": "nuevo",
+    "clave": "nuevo2026",
+    "rol": "organizador",
+    "nombre": "Organizador sin membresía",
+    "clubId": null,
+    "membresia": {
+      "plan": null,
+      "estado": "ninguna",
+      "vence": null
+    }
   },
   {
     "id": "u-atletico-riberas",
@@ -13,7 +31,8 @@
     "clave": "club2026",
     "rol": "dirigente",
     "nombre": "Manuel Otero",
-    "clubId": "atletico-riberas"
+    "clubId": "atletico-riberas",
+    "membresia": null
   },
   {
     "id": "u-cd-valdehierro",
@@ -21,7 +40,8 @@
     "clave": "club2026",
     "rol": "dirigente",
     "nombre": "Rosa Beltrán",
-    "clubId": "cd-valdehierro"
+    "clubId": "cd-valdehierro",
+    "membresia": null
   },
   {
     "id": "u-union-penalba",
@@ -29,7 +49,8 @@
     "clave": "club2026",
     "rol": "dirigente",
     "nombre": "Andrés Pinto",
-    "clubId": "union-penalba"
+    "clubId": "union-penalba",
+    "membresia": null
   },
   {
     "id": "u-real-san-roque",
@@ -37,7 +58,8 @@
     "clave": "club2026",
     "rol": "dirigente",
     "nombre": "Lucía Cabrera",
-    "clubId": "real-san-roque"
+    "clubId": "real-san-roque",
+    "membresia": null
   },
   {
     "id": "u-deportivo-la-mata",
@@ -45,7 +67,8 @@
     "clave": "club2026",
     "rol": "dirigente",
     "nombre": "Javier Nogales",
-    "clubId": "deportivo-la-mata"
+    "clubId": "deportivo-la-mata",
+    "membresia": null
   },
   {
     "id": "u-cf-molinos",
@@ -53,7 +76,8 @@
     "clave": "club2026",
     "rol": "dirigente",
     "nombre": "Elena Salas",
-    "clubId": "cf-molinos"
+    "clubId": "cf-molinos",
+    "membresia": null
   },
   {
     "id": "u-sporting-fuentevieja",
@@ -61,7 +85,8 @@
     "clave": "club2026",
     "rol": "dirigente",
     "nombre": "Tomás Herrera",
-    "clubId": "sporting-fuentevieja"
+    "clubId": "sporting-fuentevieja",
+    "membresia": null
   },
   {
     "id": "u-racing-el-robledal",
@@ -69,7 +94,8 @@
     "clave": "club2026",
     "rol": "dirigente",
     "nombre": "Marta Ledesma",
-    "clubId": "racing-el-robledal"
+    "clubId": "racing-el-robledal",
+    "membresia": null
   },
   {
     "id": "u-ad-torrecilla",
@@ -77,7 +103,8 @@
     "clave": "club2026",
     "rol": "dirigente",
     "nombre": "Ismael Corona",
-    "clubId": "ad-torrecilla"
+    "clubId": "ad-torrecilla",
+    "membresia": null
   },
   {
     "id": "u-cd-vega-alta",
@@ -85,6 +112,7 @@
     "clave": "club2026",
     "rol": "dirigente",
     "nombre": "Nuria Peláez",
-    "clubId": "cd-vega-alta"
+    "clubId": "cd-vega-alta",
+    "membresia": null
   }
 ]

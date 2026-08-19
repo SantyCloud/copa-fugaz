@@ -1,0 +1,59 @@
+{
+  "moneda": "USD",
+  "simbolo": "$",
+  "nota": "PRECIOS DE EJEMPLO. Cambiar por los reales antes de presentar al cliente.",
+  "planes": [
+    {
+      "id": "prueba",
+      "nombre": "Prueba",
+      "precio": 0,
+      "periodo": "",
+      "resumen": "Para ver cómo funciona antes de decidir.",
+      "destacado": false,
+      "limites": { "torneos": 1, "categorias": 1, "clubesPorCategoria": 6 },
+      "incluye": [
+        "1 torneo con 1 categoría",
+        "Hasta 6 clubes inscritos",
+        "Inscripción de jugadores con fecha límite",
+        "Página pública de la liga"
+      ],
+      "noIncluye": ["Clasificación y goleadores automáticos", "Varias categorías por torneo"]
+    },
+    {
+      "id": "liga",
+      "nombre": "Liga",
+      "precio": 15,
+      "periodo": "mes",
+      "resumen": "Para un campeonato de pueblo o una liga de barrio.",
+      "destacado": true,
+      "limites": { "torneos": 3, "categorias": null, "clubesPorCategoria": null },
+      "incluye": [
+        "Hasta 3 torneos a la vez",
+        "Categorías ilimitadas, de Sub-8 a Sub-40",
+        "Clubes y jugadores ilimitados",
+        "Clasificación, calendario y goleadores automáticos",
+        "Control de la fecha límite de inscripción",
+        "Página pública de la liga"
+      ],
+      "noIncluye": []
+    },
+    {
+      "id": "pro",
+      "nombre": "Liga Pro",
+      "precio": 39,
+      "periodo": "mes",
+      "resumen": "Para quien organiza varias competiciones al año.",
+      "destacado": false,
+      "limites": { "torneos": null, "categorias": null, "clubesPorCategoria": null },
+      "incluye": [
+        "Torneos ilimitados",
+        "Todo lo del plan Liga",
+        "Varios administradores por torneo",
+        "Planillas de partido para imprimir",
+        "Dominio propio",
+        "Soporte prioritario"
+      ],
+      "noIncluye": []
+    }
+  ]
+}
