@@ -31,7 +31,7 @@ import { vistaEstadisticas } from './estadisticas.js';
 import { activarAnimaciones, detenerAnimaciones } from './animaciones.js';
 
 /** Se sube a mano en cada publicación. Aparece en el pie de la web. */
-const VERSION = 'v11';
+const VERSION = 'v12';
 
 /* ─────────────────────────────── rutas ─────────────────────────────────── */
 
@@ -49,7 +49,7 @@ const RUTAS = [
 
   { patron: /^\/inscripcion(?:\/([\w-]+))?(?:\/([\w-]+))?$/,
     vista: vistaInscripcion, nav: 'inscripcion', requiere: 'sesion',
-    params: (m) => ({ clubId: m[1], categoriaId: m[2] }) },
+    params: (m) => ({ torneoId: m[1], categoriaId: m[2] }) },
 
   { patron: /^\/organizador(?:\/([\w-]+))?$/,
     vista: vistaOrganizador, nav: 'organizador', requiere: 'membresia',

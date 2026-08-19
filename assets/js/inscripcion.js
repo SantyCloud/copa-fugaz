@@ -1,26 +1,26 @@
 /**
- * PORTAL DEL DIRIGENTE — inscribir un club y cargar su nómina.
+ * PORTAL DEL DIRIGENTE — inscribir el club y cargar su nómina.
  *
- * Tres pasos, cada uno con su propia dirección para poder volver atrás:
- *   #/inscripcion                          → elegir o registrar el club
- *   #/inscripcion/:clubId                  → elegir torneo y categoría
- *   #/inscripcion/:clubId/:categoriaId     → cargar la nómina de jugadores
+ * Una decisión por pantalla, para que nadie se pierda:
+ *   #/inscripcion                        → ¿en qué torneo juegas?
+ *   #/inscripcion/:torneoId              → ¿en qué categoría?
+ *   #/inscripcion/:torneoId/:categoriaId → cargar los jugadores
+ *
+ * Antes se enseñaban los dos torneos con sus veinte categorías a la vez, todas
+ * con el mismo texto repetido. Ahora son dos preguntas cortas y claras.
  *
  * Las reglas (fecha límite, edad, cédula repetida, cupo) NO se comprueban
- * aquí: viven en data.js, que es lo que se migrará a Supabase. Esta vista
- * solo enseña el resultado.
+ * aquí: viven en data.js. Esta vista solo enseña el resultado.
  */
 
 import { Datos } from './data.js';
 import { Sesion } from './sesion.js';
 import { escapar, escudo, formatearFecha } from './ui.js';
+import { Iconos } from './iconos.js';
 
+/** Barra de pasos. El dirigente siempre ve los mismos tres. */
 function barraPasos(paso) {
-  // El dirigente entra ya identificado con su club: para él solo hay dos pasos.
-  const pasos = Sesion.esDirigente()
-    ? ['Torneo y categoría', 'Nómina']
-    : ['Club', 'Torneo y categoría', 'Nómina'];
-  if (Sesion.esDirigente()) paso -= 1;
+  const pasos = ['Torneo', 'Categoría', 'Jugadores'];
   return `
     <div class="pasos">
       ${pasos
@@ -35,241 +35,106 @@ function barraPasos(paso) {
     </div>`;
 }
 
-/** Etiqueta y cuenta atrás del plazo de una categoría. */
-function estadoPlazo(categoria) {
-  const { abierto, dias } = Datos.plazoAbierto(categoria);
-  if (!abierto) {
-    return {
-      abierto: false,
-      etiqueta: '<span class="etiqueta etiqueta--cerrada">Cerrada</span>',
-      texto: `<span class="cuenta-atras cuenta-atras--cerrada">Cerró el ${formatearFecha(categoria.fechaLimite, { day: 'numeric', month: 'short' })}</span>`,
-    };
-  }
-  const pronto = dias <= 7;
-  return {
-    abierto: true,
-    etiqueta: `<span class="etiqueta etiqueta--${pronto ? 'pronto' : 'abierta'}">${pronto ? 'Cierra pronto' : 'Abierta'}</span>`,
-    texto: `<span class="cuenta-atras ${pronto ? 'cuenta-atras--pronto' : ''}">${
-      dias <= 0 ? 'Último día' : `Quedan ${dias} día${dias === 1 ? '' : 's'}`
-    }</span>`,
-  };
+/** Cabecera con el escudo y el nombre del club. */
+function cabeceraClub(club, sub) {
+  return `
+    <div class="ficha">
+      ${escudo(club, 'escudo--grande')}
+      <div>
+        <h1 class="ficha__nombre">${escapar(club.nombre)}</h1>
+        <p class="ficha__meta">${sub}</p>
+      </div>
+    </div>`;
 }
 
-/* ───────────────────────── paso 1: elegir club ─────────────────────────── */
+/* ─────────────────── paso 1: ¿en qué torneo juegas? ────────────────────── */
 
-function pasoClub() {
-  const clubes = Datos.getClubes();
-
-  const lista = clubes
-    .map((c) => {
-      const inscripciones = Datos.getInscripciones({ clubId: c.id });
-      return `
-      <a class="tarjeta-equipo" href="#/inscripcion/${escapar(c.id)}"
-         style="--franja:${escapar(c.colorPrimario)}">
-        <div class="tarjeta-equipo__fila">
-          ${escudo(c, 'escudo--grande')}
-          <div style="min-width:0">
-            <div class="tarjeta-equipo__nombre">${escapar(c.nombre)}</div>
-            <div class="tarjeta-equipo__meta">Dirigente: ${escapar(c.dirigente?.nombre || '—')}</div>
-          </div>
-        </div>
-        <div class="tarjeta-equipo__stats">
-          <div class="mini-stat">
-            <div class="mini-stat__valor">${inscripciones.length}</div>
-            <div class="mini-stat__etiqueta">Inscripciones</div>
-          </div>
-        </div>
-      </a>`;
-    })
-    .join('');
-
-  const html = `
-    <main class="principal"><div class="contenedor">
-      ${barraPasos(1)}
-      <section class="seccion">
-        <div class="seccion__cabecera">
-          <h1 class="seccion__titulo">¿Desde qué club te inscribes?</h1>
-          <span class="seccion__nota">${clubes.length} clubes registrados</span>
-        </div>
-        <div class="grid-equipos">${lista}</div>
-      </section>
-
-      <section class="seccion">
-        <div class="seccion__cabecera"><h2 class="seccion__titulo">¿Tu club no está?</h2></div>
-        <div class="tarjeta">
-          <div class="tarjeta__cuerpo">
-            <div class="rejilla-campos">
-              <div class="campo campo--ancho">
-                <label class="campo__etiqueta" for="c-nombre">Nombre del club</label>
-                <input class="entrada" id="c-nombre" maxlength="40" placeholder="Deportivo Los Álamos">
-              </div>
-              <div class="campo">
-                <label class="campo__etiqueta" for="c-abrev">Siglas</label>
-                <input class="entrada" id="c-abrev" maxlength="4" placeholder="DLA">
-              </div>
-              <div class="campo">
-                <label class="campo__etiqueta" for="c-color">Color del club</label>
-                <input class="entrada" id="c-color" type="color" value="#9ee641" style="height:44px;padding:5px">
-              </div>
-              <div class="campo campo--ancho">
-                <label class="campo__etiqueta" for="c-dirigente">Dirigente responsable</label>
-                <input class="entrada" id="c-dirigente" maxlength="60" placeholder="Nombre y apellidos">
-              </div>
-              <div class="campo">
-                <label class="campo__etiqueta" for="c-telefono">Teléfono</label>
-                <input class="entrada" id="c-telefono" maxlength="20" placeholder="0991234567">
-              </div>
-              <div class="campo">
-                <label class="campo__etiqueta" for="c-correo">Correo</label>
-                <input class="entrada" id="c-correo" type="email" maxlength="60" placeholder="club@correo.com">
-              </div>
-            </div>
-            <div id="msj-club"></div>
-            <div class="acciones">
-              <button class="boton boton--ancho" id="btn-registrar">Registrar club</button>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div></main>`;
-
-  function activar(raiz, navegar) {
-    const $ = (s) => raiz.querySelector(s);
-    $('#btn-registrar').addEventListener('click', async () => {
-      const res = await Datos.registrarClub({
-        nombre: $('#c-nombre').value,
-        abreviatura: $('#c-abrev').value,
-        colorPrimario: $('#c-color').value,
-        dirigente: {
-          nombre: $('#c-dirigente').value,
-          telefono: $('#c-telefono').value,
-          correo: $('#c-correo').value,
-        },
-      });
-      if (!res.ok) {
-        $('#msj-club').innerHTML =
-          `<div class="aviso aviso--error" style="margin:14px 0 0">
-             <span class="aviso__icono">⚠️</span><div>${escapar(res.motivo)}</div></div>`;
-        return;
-      }
-      navegar(`#/inscripcion/${res.club.id}`);
-    });
-  }
-
-  return { html, activar };
-}
-
-/* ──────────────────── paso 2: elegir torneo y categoría ────────────────── */
-
-function pasoCategoria(club) {
+function pasoTorneo(club) {
   const torneos = Datos.getTorneos();
 
-  const bloques = torneos
+  const tarjetas = torneos
     .map((t) => {
-      const filas = t.categorias
-        .map((cat) => {
-          const plazo = estadoPlazo(cat);
-          const yaInscrito = Datos.getInscripciones({
-            clubId: club.id,
-            categoriaId: cat.id,
-          })[0];
-
-          const rango =
-            cat.edadMaxima != null
-              ? `hasta ${cat.edadMaxima} años`
-              : cat.edadMinima != null
-              ? `desde ${cat.edadMinima} años`
-              : 'sin límite de edad';
-
-          let accion;
-          if (yaInscrito) {
-            accion = `<a class="boton boton--secundario boton--chico"
-                         href="#/inscripcion/${escapar(club.id)}/${escapar(cat.id)}">
-                        Ver nómina</a>`;
-          } else if (plazo.abierto) {
-            accion = `<button class="boton boton--chico js-inscribir"
-                         data-categoria="${escapar(cat.id)}">Inscribirse</button>`;
-          } else {
-            accion = `<button class="boton boton--chico" disabled>Plazo cerrado</button>`;
-          }
-
-          const estadoInsc = yaInscrito
-            ? `<span class="etiqueta etiqueta--${escapar(yaInscrito.estado)}">${escapar(yaInscrito.estado)}</span>`
-            : '';
-
-          return `
-            <div class="categoria">
-              <span class="categoria__marca" style="--marca:${
-                plazo.abierto ? 'var(--neon)' : 'var(--error)'
-              }"></span>
-              <div class="categoria__datos">
-                <span class="categoria__nombre">${escapar(cat.nombre)}</span>
-                <span class="categoria__meta">${escapar(rango)} · máx. ${cat.maxJugadores} jugadores · cierra el ${formatearFecha(
-            cat.fechaLimite,
-            { day: 'numeric', month: 'long' }
-          )}</span>
-              </div>
-              <div class="categoria__acciones">
-                ${estadoInsc}${plazo.etiqueta}${plazo.texto}${accion}
-              </div>
-            </div>`;
-        })
-        .join('');
+      const abiertas = t.categorias.filter((c) => Datos.plazoAbierto(c).abierto).length;
+      const yaInscrito = Datos.getInscripciones({ clubId: club.id, torneoId: t.id }).length;
 
       return `
-        <div class="torneo">
-          <div class="torneo__cabecera">
-            <span class="torneo__nombre">${escapar(t.nombre)}</span>
-            <span class="torneo__modalidad">${escapar(t.modalidad)}</span>
-          </div>
-          ${filas || '<div class="vacio">Este torneo todavía no tiene categorías.</div>'}
-        </div>`;
+        <a class="eleccion" href="#/inscripcion/${escapar(t.id)}">
+          <span class="eleccion__icono">${Iconos.trofeo(26)}</span>
+          <span class="eleccion__titulo">${escapar(t.nombre)}</span>
+          <span class="eleccion__texto">${t.jugadoresPorEquipo} jugadores por equipo</span>
+          <span class="eleccion__pie">
+            ${abiertas} categoría${abiertas === 1 ? '' : 's'} abierta${abiertas === 1 ? '' : 's'}
+            ${yaInscrito ? ` · ya estás en ${yaInscrito}` : ''}
+          </span>
+        </a>`;
     })
     .join('');
 
   const html = `
-    <main class="principal"><div class="contenedor">
-      ${Sesion.esOrganizador() ? '<a class="volver" href="#/inscripcion">← Cambiar de club</a>' : ''}
-      ${barraPasos(2)}
+    <main class="principal"><div class="contenedor contenedor--medio">
+      ${barraPasos(1)}
+      ${cabeceraClub(club, `Dirigente: ${escapar(club.dirigente?.nombre || '—')}`)}
 
-      <div class="ficha">
-        ${escudo(club, 'escudo--grande')}
-        <div>
-          <h1 class="ficha__nombre">${escapar(club.nombre)}</h1>
-          <p class="ficha__meta">Dirigente: ${escapar(club.dirigente?.nombre || '—')}</p>
-        </div>
-      </div>
-
-      <section class="seccion">
-        <div class="seccion__cabecera">
-          <h2 class="seccion__titulo">Elige torneo y categoría</h2>
-          <span class="seccion__nota">Solo puedes inscribirte mientras el plazo siga abierto</span>
-        </div>
-        <div class="grid-torneos">${bloques}</div>
-      </section>
+      <h2 class="pregunta-grande">¿En qué torneo juega tu equipo?</h2>
+      <div class="elecciones">${tarjetas}</div>
     </div></main>`;
 
-  function activar(raiz, navegar) {
-    raiz.addEventListener('click', async (e) => {
-      const boton = e.target.closest('.js-inscribir');
-      if (!boton) return;
-      const categoriaId = boton.dataset.categoria;
-      const res = await Datos.crearInscripcion({ clubId: club.id, categoriaId });
-      if (!res.ok) {
-        boton.insertAdjacentHTML(
-          'afterend',
-          `<span class="cuenta-atras cuenta-atras--cerrada">${escapar(res.motivo)}</span>`
-        );
-        return;
-      }
-      navegar(`#/inscripcion/${club.id}/${categoriaId}`);
-    });
-  }
-
-  return { html, activar };
+  return { html };
 }
 
-/* ─────────────────────── paso 3: cargar la nómina ──────────────────────── */
+/* ───────────────── paso 2: ¿en qué categoría? ──────────────────────────── */
+
+function pasoCategoria(club, torneo) {
+  const fichas = torneo.categorias
+    .map((c) => {
+      const plazo = Datos.plazoAbierto(c);
+      const inscripcion = Datos.getInscripciones({ clubId: club.id, categoriaId: c.id })[0];
+      const pronto = plazo.abierto && plazo.dias <= 7;
+
+      const nombresEstado = {
+        borrador: 'Empezada',
+        enviada: 'Enviada',
+        aprobada: 'Aprobada',
+      };
+
+      const pie = inscripcion
+        ? `<span class="cat-ficha__estado cat-ficha__estado--${escapar(inscripcion.estado)}">${
+            escapar(nombresEstado[inscripcion.estado] || inscripcion.estado)
+          }</span>`
+        : !plazo.abierto
+        ? '<span class="cat-ficha__estado">Plazo cerrado</span>'
+        : pronto
+        ? `<span class="cat-ficha__estado cat-ficha__estado--pronto">Quedan ${plazo.dias} d${plazo.dias === 1 ? 'ía' : 'ías'}</span>`
+        : '<span class="cat-ficha__estado cat-ficha__estado--libre">Abierta</span>';
+
+      const clase = !plazo.abierto && !inscripcion ? 'cat-ficha--cerrada' : '';
+      const edad =
+        c.edadMaxima != null ? `hasta ${c.edadMaxima} años` : 'mayores de 18';
+
+      const cuerpo = `
+        <span class="cat-ficha__nombre">${escapar(c.nombre)}</span>
+        <span class="cat-ficha__edad">${escapar(edad)}</span>
+        ${pie}`;
+
+      return plazo.abierto || inscripcion
+        ? `<a class="cat-ficha ${clase}" href="#/inscripcion/${escapar(torneo.id)}/${escapar(c.id)}">${cuerpo}</a>`
+        : `<span class="cat-ficha ${clase}">${cuerpo}</span>`;
+    })
+    .join('');
+
+  const html = `
+    <main class="principal"><div class="contenedor contenedor--medio">
+      <a class="volver" href="#/inscripcion">← Cambiar de torneo</a>
+      ${barraPasos(2)}
+      ${cabeceraClub(club, escapar(torneo.nombre))}
+
+      <h2 class="pregunta-grande">¿En qué categoría?</h2>
+      <p class="pregunta-ayuda">Puedes inscribir a tu club en varias. Elige una para empezar.</p>
+      <div class="cat-rejilla">${fichas}</div>
+    </div></main>`;
+
+  return { html };
+}
 
 function pasoNomina(club, categoria, inscripcion) {
   const plazo = Datos.plazoAbierto(categoria);
@@ -367,8 +232,8 @@ function pasoNomina(club, categoria, inscripcion) {
     </section>`;
 
   const html = `
-    <main class="principal"><div class="contenedor">
-      <a class="volver" href="#/inscripcion/${escapar(club.id)}">← Cambiar de categoría</a>
+    <main class="principal"><div class="contenedor contenedor--medio">
+      <a class="volver" href="#/inscripcion/${escapar(categoria.torneo.id)}">← Cambiar de categoría</a>
       ${barraPasos(3)}
 
       <div class="ficha">
@@ -434,7 +299,7 @@ function pasoNomina(club, categoria, inscripcion) {
         posicion: $('#j-posicion').value,
       });
       if (!res.ok) return avisar('#msj-jugador', res.motivo, 'error');
-      navegar(`#/inscripcion/${club.id}/${categoria.id}`, true);
+      navegar(`#/inscripcion/${categoria.torneo.id}/${categoria.id}`, true);
     });
 
     raiz.addEventListener('click', async (e) => {
@@ -442,13 +307,13 @@ function pasoNomina(club, categoria, inscripcion) {
       if (!boton) return;
       const res = await Datos.quitarJugador(boton.dataset.jugador);
       if (!res.ok) return avisar('#msj-envio', res.motivo, 'error');
-      navegar(`#/inscripcion/${club.id}/${categoria.id}`, true);
+      navegar(`#/inscripcion/${categoria.torneo.id}/${categoria.id}`, true);
     });
 
     $('#btn-enviar')?.addEventListener('click', async () => {
       const res = await Datos.enviarInscripcion(inscripcion.id);
       if (!res.ok) return avisar('#msj-envio', res.motivo, 'error');
-      navegar(`#/inscripcion/${club.id}/${categoria.id}`, true);
+      navegar(`#/inscripcion/${categoria.torneo.id}/${categoria.id}`, true);
     });
   }
 
@@ -457,43 +322,73 @@ function pasoNomina(club, categoria, inscripcion) {
 
 /* ─────────────────────────────── entrada ───────────────────────────────── */
 
-export function vistaInscripcion(params = {}) {
-  // Un dirigente solo puede tocar su club, venga lo que venga en la dirección.
-  const propio = Sesion.clubDeLaSesion();
-  const clubId = propio || params.clubId;
-
-  // Sin club: el organizador elige uno; el dirigente nunca llega aquí.
-  if (!clubId) return pasoClub();
-
-  const club = Datos.getClub(clubId);
-  if (!club) return pasoClub();
-
-  if (!Sesion.puedeGestionarClub(club.id)) {
-    return {
-      html: `<main class="principal"><div class="contenedor" style="max-width:520px">
-        <div class="aviso aviso--error">
-          <span class="aviso__icono">🔒</span>
-          <div><strong>Ese club no es el tuyo.</strong>
-          <p style="margin-top:6px">Cada dirigente solo puede ver e inscribir a los
-          jugadores de su propio club.</p></div>
+/**
+ * El organizador no pasa por aquí: ve todas las nóminas desde su panel.
+ * Así este flujo tiene un solo tipo de usuario y una sola ruta posible.
+ */
+function soloParaDirigentes() {
+  return {
+    html: `
+      <main class="principal"><div class="contenedor contenedor--estrecho">
+        <div class="aviso aviso--info">
+          <span class="aviso__icono">📋</span>
+          <div><strong>Las nóminas de los clubes están en tu panel.</strong>
+          <p style="margin-top:6px">Entra en una categoría para ver quién se ha inscrito
+          y qué jugadores ha cargado cada club.</p></div>
         </div>
         <div class="acciones" style="border:0">
-          <a class="boton" href="#/inscripcion">Ir a mi club</a>
+          <a class="boton" href="#/organizador">Ir a mi panel</a>
         </div>
       </div></main>`,
+  };
+}
+
+export function vistaInscripcion(params = {}) {
+  if (Sesion.esOrganizador()) return soloParaDirigentes();
+
+  const club = Datos.getClub(Sesion.clubDeLaSesion());
+  if (!club) {
+    return {
+      html: `
+        <main class="principal"><div class="contenedor contenedor--estrecho">
+          <div class="aviso aviso--error">
+            <span class="aviso__icono">⚠️</span>
+            <div>No encontramos tu club. Vuelve a entrar.</div>
+          </div>
+          <div class="acciones" style="border:0">
+            <a class="boton" href="#/entrar">Entrar</a>
+          </div>
+        </div></main>`,
     };
   }
 
-  if (!params.categoriaId) return pasoCategoria(club);
+  // Paso 1: sin torneo elegido.
+  const torneo = params.torneoId ? Datos.getTorneo(params.torneoId) : null;
+  if (!torneo) return pasoTorneo(club);
+
+  // Paso 2: sin categoría elegida.
+  if (!params.categoriaId) return pasoCategoria(club, torneo);
 
   const categoria = Datos.getCategoria(params.categoriaId);
-  if (!categoria) return pasoCategoria(club);
+  if (!categoria) return pasoCategoria(club, torneo);
 
-  const inscripcion = Datos.getInscripciones({
+  // Paso 3: nos aseguramos de que exista la inscripción antes de la nómina.
+  let inscripcion = Datos.getInscripciones({
     clubId: club.id,
     categoriaId: categoria.id,
   })[0];
-  if (!inscripcion) return pasoCategoria(club);
+
+  if (!inscripcion) {
+    // La creamos al vuelo: el dirigente ya dijo que quiere esta categoría.
+    const plazo = Datos.plazoAbierto(categoria);
+    if (!plazo.abierto) return pasoCategoria(club, torneo);
+    Datos.crearInscripcion({ clubId: club.id, categoriaId: categoria.id });
+    inscripcion = Datos.getInscripciones({
+      clubId: club.id,
+      categoriaId: categoria.id,
+    })[0];
+    if (!inscripcion) return pasoCategoria(club, torneo);
+  }
 
   return pasoNomina(club, categoria, inscripcion);
 }
