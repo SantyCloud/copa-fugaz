@@ -972,8 +972,11 @@ a.seccion__nota:hover { color: var(--neon); }
 .maqueta__fila:nth-child(3) { animation-delay: .20s; }
 .maqueta__fila:nth-child(4) { animation-delay: .30s; }
 .maqueta__fila:nth-child(5) { animation-delay: .40s; }
+/* Arranca en .45 y no en 0: si la animación no llega a ejecutarse —pestaña en
+   segundo plano, ahorro de energía— la fila se queda tenue pero legible, nunca
+   invisible. Misma regla que en el resto del sitio. */
 @keyframes entrarFila {
-  from { opacity: 0; transform: translateX(10px); }
+  from { opacity: .45; transform: translateX(10px); }
   to   { opacity: 1; transform: none; }
 }
 
