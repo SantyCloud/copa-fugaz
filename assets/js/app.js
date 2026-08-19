@@ -24,13 +24,14 @@ import { vistaPanel } from './panel.js';
 import { vistaInscripcion } from './inscripcion.js';
 import { vistaOrganizador } from './organizador.js';
 import { vistaAcceso, vistaSinPermiso } from './acceso.js';
+import { vistaRegistro } from './registro.js';
 import { vistaPortada } from './inicio.js';
 import { cargarPlanes, vistaPlanes, vistaMembresiaRequerida } from './membresia.js';
 import { vistaEstadisticas } from './estadisticas.js';
 import { activarAnimaciones, detenerAnimaciones } from './animaciones.js';
 
 /** Se sube a mano en cada publicación. Aparece en el pie de la web. */
-const VERSION = 'v10';
+const VERSION = 'v11';
 
 /* ─────────────────────────────── rutas ─────────────────────────────────── */
 
@@ -43,6 +44,8 @@ const RUTAS = [
 
   { patron: /^\/entrar(?:\/(.+))?$/, vista: vistaAcceso, nav: 'entrar',
     params: (m) => ({ destino: m[1] }) },
+
+  { patron: /^\/registro$/, vista: vistaRegistro, nav: 'registro' },
 
   { patron: /^\/inscripcion(?:\/([\w-]+))?(?:\/([\w-]+))?$/,
     vista: vistaInscripcion, nav: 'inscripcion', requiere: 'sesion',

@@ -49,9 +49,15 @@ export function vistaAcceso(params = {}) {
 
         <button class="boton boton--ancho" id="btn-entrar" style="margin-top:18px">Entrar</button>
 
+        <hr class="separador">
+
+        <p class="acceso__pregunta">¿Es la primera vez que entras?</p>
+        <a class="boton boton--secundario boton--ancho" href="#/registro">
+          Crear la cuenta de mi club
+        </a>
+
         <p class="acceso__pie">
-          ¿Diriges un club y no tienes acceso? Pídeselo a la organización de tu torneo.<br>
-          ¿Quieres organizar el tuyo? <a href="#/planes">Mira los planes</a>.
+          ¿Organizas un torneo? <a href="#/planes">Mira los planes</a>.
         </p>
       </div>
     </div></main>`;

@@ -87,7 +87,67 @@ export const Sesion = {
     return [...usuarios, ...accesosLocales()];
   },
 
-  /** Accesos de dirigente creados, para que el organizador pueda consultarlos. */
+/**
+   * Crea la cuenta de un dirigente junto con su club, en un solo paso.
+   *
+   * Es la puerta de entrada de quien llega por su cuenta: no depende de que
+   * el organizador le genere nada. En producción esto será un registro de
+   * Supabase Auth más una fila en la tabla de clubes.
+   */
+  async crearCuenta({ club, dirigente, telefono, usuario, clave }) {
+    const nombreClub = String(club || '').trim();
+    const nombreDir = String(dirigente || '').trim();
+    const user = String(usuario || '').trim().toLowerCase();
+    const pass = String(clave || '');
+
+    if (nombreClub.length < 3) {
+      return { ok: false, motivo: 'Escribe el nombre completo de tu club.' };
+    }
+    if (nombreDir.length < 3) {
+      return { ok: false, motivo: 'Escribe tu nombre y apellido.' };
+    }
+    if (!/^[a-z0-9._-]{4,20}$/.test(user)) {
+      return {
+        ok: false,
+        motivo: 'El usuario debe tener entre 4 y 20 caracteres, sin espacios ni acentos.',
+      };
+    }
+    if (this.todasLasCuentas().some((u) => u.usuario.toLowerCase() === user)) {
+      return { ok: false, motivo: `El usuario "${user}" ya está ocupado. Prueba con otro.` };
+    }
+    if (pass.length < 4) {
+      return { ok: false, motivo: 'La contraseña necesita al menos 4 caracteres.' };
+    }
+
+    return {
+      ok: true,
+      datos: { nombreClub, nombreDir, telefono: String(telefono || '').trim(), user, pass },
+    };
+  },
+
+  /** Guarda el acceso ya validado y deja la sesión abierta. */
+  async registrarAcceso(club, { user, pass, nombreDir }) {
+    const acceso = {
+      id: `u-${club.id}`,
+      usuario: user,
+      clave: pass,
+      rol: 'dirigente',
+      nombre: nombreDir,
+      clubId: club.id,
+      membresia: null,
+    };
+    guardarAccesos([...accesosLocales(), acceso]);
+
+    const sesion = publico(acceso);
+    try {
+      localStorage.setItem(CLAVE_SESION, JSON.stringify(sesion));
+    } catch {
+      /* sin almacenamiento: la sesión dura lo que la pestaña */
+    }
+    return { ok: true, sesion };
+  },
+
+    /** Accesos de dirigente creados, para que el organizador pueda consultarlos. */
   accesosDeDirigentes: () => accesosLocales().map((a) => ({ ...a })),
 
   /**
