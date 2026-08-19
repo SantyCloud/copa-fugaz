@@ -111,8 +111,10 @@ Es un **SaaS de gestión de torneos**, no la web de una sola liga:
 - **Inscribir un club es gratis.** El organizador da el acceso a cada dirigente.
 - **La liga es pública.** Clasificación, calendario, clubes y goleadores se ven sin cuenta.
 
-El recorrido es el de cualquier SaaS: **portada que explica el producto → entrar →
-planes si hace falta → panel**. El panel del organizador no se enseña a quien no ha pagado.
+⚠️ **La venta no es la prioridad ahora.** La portada es la del campeonato del cliente:
+enseña sus torneos y sus plazos, y lleva a inscribir un club. Contratar una membresía para
+organizar torneos propios existe en `#/planes`, pero solo se llega desde el pie. El panel
+del organizador sigue exigiendo membresía activa.
 
 ⚠️ **Los precios de `data/planes.json` son de ejemplo.** Hay que confirmarlos con el
 cliente antes de presentarlo. Están en un JSON aparte justo para poder cambiarlos sin
@@ -165,7 +167,7 @@ data/*.json               datos semilla
 assets/js/data.js         ← CAPA DE DATOS + REGLAS DE NEGOCIO. Punto de migración.
 assets/js/sesion.js       ← ACCESO Y ROLES. Punto de migración a Supabase Auth.
 assets/js/acceso.js       pantalla de entrar
-assets/js/inicio.js       portada pública que explica el producto
+assets/js/inicio.js       portada pública: torneos del cliente y sus plazos
 assets/js/estadisticas.js números del campeonato (goleadores, rachas, porterías a cero)
 assets/js/animaciones.js  máquina de escribir, parallax, revelado y contadores
 assets/js/membresia.js    planes y muro de pago del organizador
