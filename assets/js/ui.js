@@ -217,7 +217,16 @@ export function vistaInicio() {
 /* ──────────────────────── componentes reutilizables ────────────────────── */
 
 function tablaClasificacion(clasificacion) {
-  if (!clasificacion.length) return bloqueVacio('📋', 'Todavía no hay equipos inscritos.');
+  if (!clasificacion.length) {
+    return `<div class="tarjeta"><div class="vacio">
+      <div class="vacio__icono">📋</div>
+      <p><strong>Todavía no hay equipos en esta competición.</strong></p>
+      <p class="seccion__nota" style="max-width:44ch;margin:8px auto 0">
+        En cuanto los clubes se inscriban y se dispute la primera jornada, aquí saldrá
+        la tabla con puntos, diferencia de goles y la racha de cada equipo.
+      </p>
+    </div></div>`;
+  }
 
   const filas = clasificacion
     .map((f) => {
@@ -316,7 +325,23 @@ export function vistaCalendario(params = {}) {
   const { partidos, indiceEquipos } = contexto();
   const jornadas = agruparPorJornada(partidos);
   if (!jornadas.length) {
-    return { html: `<main class="principal"><div class="contenedor">${bloqueVacio('📅', 'No hay partidos programados.')}</div></main>` };
+    return {
+      html: `<main class="principal"><div class="contenedor">
+        <section class="seccion">
+          <div class="seccion__cabecera">
+            <h1 class="seccion__titulo">Calendario</h1>
+          </div>
+          <div class="tarjeta"><div class="vacio">
+            <div class="vacio__icono">📅</div>
+            <p><strong>Todavía no hay partidos programados.</strong></p>
+            <p class="seccion__nota" style="max-width:44ch;margin:8px auto 0">
+              Cuando se cierre el plazo de inscripción y estén los equipos, aquí aparecerá
+              el calendario por jornadas con la fecha, la hora y el marcador de cada partido.
+            </p>
+          </div></div>
+        </section>
+      </div></main>`,
+    };
   }
 
   const actual = Number(params.jornada) || Datos.jornadaActual() || 1;
@@ -402,10 +427,25 @@ export function vistaEquipos() {
       <div class="contenedor">
         <section class="seccion">
           <div class="seccion__cabecera">
-            <h1 class="seccion__titulo">Equipos</h1>
-            <span class="seccion__nota">${clasificacion.length} equipos · ordenados por clasificación</span>
+            <h1 class="seccion__titulo">Clubes</h1>
+            <span class="seccion__nota">${
+              clasificacion.length
+                ? `${clasificacion.length} clubes · ordenados por clasificación`
+                : 'aún sin registrar'
+            }</span>
           </div>
-          <div class="grid-equipos">${tarjetas}</div>
+          ${
+            tarjetas
+              ? `<div class="grid-equipos">${tarjetas}</div>`
+              : `<div class="tarjeta"><div class="vacio">
+                   <div class="vacio__icono">🏟️</div>
+                   <p><strong>Todavía no hay clubes registrados.</strong></p>
+                   <p class="seccion__nota" style="max-width:44ch;margin:8px auto 0">
+                     La organización del torneo registra cada club y le entrega su acceso
+                     para que cargue la nómina de sus jugadores.
+                   </p>
+                 </div></div>`
+          }
         </section>
       </div>
     </main>`;

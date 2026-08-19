@@ -7,11 +7,35 @@
     "jugadoresPorEquipo": 11,
     "categorias": [
       {
-        "id": "f11-libre",
-        "nombre": "Libre",
-        "edadMinima": 18,
-        "edadMaxima": null,
-        "fechaLimite": "2026-02-28",
+        "id": "f11-sub8",
+        "nombre": "Sub-8",
+        "edadMinima": 6,
+        "edadMaxima": 8,
+        "fechaLimite": "2026-12-31",
+        "maxJugadores": 22
+      },
+      {
+        "id": "f11-sub10",
+        "nombre": "Sub-10",
+        "edadMinima": 8,
+        "edadMaxima": 10,
+        "fechaLimite": "2026-12-31",
+        "maxJugadores": 22
+      },
+      {
+        "id": "f11-sub12",
+        "nombre": "Sub-12",
+        "edadMinima": 10,
+        "edadMaxima": 12,
+        "fechaLimite": "2026-12-31",
+        "maxJugadores": 22
+      },
+      {
+        "id": "f11-sub14",
+        "nombre": "Sub-14",
+        "edadMinima": 12,
+        "edadMaxima": 14,
+        "fechaLimite": "2026-12-31",
         "maxJugadores": 22
       },
       {
@@ -19,16 +43,48 @@
         "nombre": "Sub-16",
         "edadMinima": 14,
         "edadMaxima": 16,
-        "fechaLimite": "2026-09-10",
-        "maxJugadores": 20
+        "fechaLimite": "2026-12-31",
+        "maxJugadores": 22
+      },
+      {
+        "id": "f11-sub18",
+        "nombre": "Sub-18",
+        "edadMinima": 16,
+        "edadMaxima": 18,
+        "fechaLimite": "2026-12-31",
+        "maxJugadores": 22
+      },
+      {
+        "id": "f11-libre",
+        "nombre": "Libre",
+        "edadMinima": 18,
+        "edadMaxima": null,
+        "fechaLimite": "2026-12-31",
+        "maxJugadores": 22
+      },
+      {
+        "id": "f11-sub30",
+        "nombre": "Sub-30",
+        "edadMinima": 18,
+        "edadMaxima": 30,
+        "fechaLimite": "2026-12-31",
+        "maxJugadores": 22
+      },
+      {
+        "id": "f11-sub35",
+        "nombre": "Sub-35",
+        "edadMinima": 30,
+        "edadMaxima": 35,
+        "fechaLimite": "2026-12-31",
+        "maxJugadores": 22
       },
       {
         "id": "f11-sub40",
         "nombre": "Sub-40",
-        "edadMinima": 30,
+        "edadMinima": 35,
         "edadMaxima": 40,
-        "fechaLimite": "2026-08-31",
-        "maxJugadores": 20
+        "fechaLimite": "2026-12-31",
+        "maxJugadores": 22
       }
     ]
   },
@@ -44,7 +100,7 @@
         "nombre": "Sub-8",
         "edadMinima": 6,
         "edadMaxima": 8,
-        "fechaLimite": "2026-09-20",
+        "fechaLimite": "2026-12-31",
         "maxJugadores": 14
       },
       {
@@ -52,7 +108,7 @@
         "nombre": "Sub-10",
         "edadMinima": 8,
         "edadMaxima": 10,
-        "fechaLimite": "2026-09-20",
+        "fechaLimite": "2026-12-31",
         "maxJugadores": 14
       },
       {
@@ -60,7 +116,63 @@
         "nombre": "Sub-12",
         "edadMinima": 10,
         "edadMaxima": 12,
-        "fechaLimite": "2026-08-20",
+        "fechaLimite": "2026-12-31",
+        "maxJugadores": 14
+      },
+      {
+        "id": "f7-sub14",
+        "nombre": "Sub-14",
+        "edadMinima": 12,
+        "edadMaxima": 14,
+        "fechaLimite": "2026-12-31",
+        "maxJugadores": 14
+      },
+      {
+        "id": "f7-sub16",
+        "nombre": "Sub-16",
+        "edadMinima": 14,
+        "edadMaxima": 16,
+        "fechaLimite": "2026-12-31",
+        "maxJugadores": 14
+      },
+      {
+        "id": "f7-sub18",
+        "nombre": "Sub-18",
+        "edadMinima": 16,
+        "edadMaxima": 18,
+        "fechaLimite": "2026-12-31",
+        "maxJugadores": 14
+      },
+      {
+        "id": "f7-libre",
+        "nombre": "Libre",
+        "edadMinima": 18,
+        "edadMaxima": null,
+        "fechaLimite": "2026-12-31",
+        "maxJugadores": 14
+      },
+      {
+        "id": "f7-sub30",
+        "nombre": "Sub-30",
+        "edadMinima": 18,
+        "edadMaxima": 30,
+        "fechaLimite": "2026-12-31",
+        "maxJugadores": 14
+      },
+      {
+        "id": "f7-sub35",
+        "nombre": "Sub-35",
+        "edadMinima": 30,
+        "edadMaxima": 35,
+        "fechaLimite": "2026-12-31",
+        "maxJugadores": 14
+      },
+      {
+        "id": "f7-sub40",
+        "nombre": "Sub-40",
+        "edadMinima": 35,
+        "edadMaxima": 40,
+        "fechaLimite": "2026-12-31",
         "maxJugadores": 14
       }
     ]

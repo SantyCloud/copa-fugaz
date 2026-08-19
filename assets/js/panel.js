@@ -108,14 +108,6 @@ export function vistaPanel(params = {}) {
             <h1 class="seccion__titulo">Panel de resultados</h1>
           </div>
 
-          <div class="aviso aviso--info">
-            <span class="aviso__icono">🔒</span>
-            <div>
-              <strong>Versión de demostración.</strong> Los cambios se guardan en este
-              navegador para que puedas probar la web. En producción se guardarán en la
-              base de datos y el panel estará protegido con usuario y contraseña.
-            </div>
-          </div>
 
           <div class="tarjeta">
             <div class="tarjeta__cuerpo">

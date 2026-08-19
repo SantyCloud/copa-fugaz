@@ -9,6 +9,7 @@
  */
 
 import { Datos } from './data.js';
+import { Sesion } from './sesion.js';
 import { escapar, escudo, formatearFecha, nombreJugador } from './ui.js';
 
 /** Hoy en formato YYYY-MM-DD, para el mínimo de los campos de fecha. */
@@ -31,6 +32,48 @@ function resumenCategoria(categoria) {
     jugadores,
     pendientes: inscripciones.filter((i) => i.estado === 'borrador').length,
   };
+}
+
+
+/** Clubes registrados, con el acceso de su dirigente si se generó aquí. */
+function listaClubes() {
+  const clubes = Datos.getClubes();
+  if (!clubes.length) {
+    return `<div class="tarjeta"><div class="vacio">
+      <div class="vacio__icono">🏟️</div>
+      <p><strong>Todavía no hay clubes.</strong></p>
+      <p class="seccion__nota">Registra el primero abajo y te daremos el acceso
+      para su dirigente.</p>
+    </div></div>`;
+  }
+
+  const accesos = new Map(Sesion.accesosDeDirigentes().map((a) => [a.clubId, a]));
+
+  return `<div class="tarjeta">${clubes
+    .map((c) => {
+      const acceso = accesos.get(c.id);
+      const inscripciones = Datos.getInscripciones({ clubId: c.id }).length;
+      return `
+        <div class="nomina-fila">
+          ${escudo(c)}
+          <div class="nomina-datos">
+            <div class="nomina-nombre">${escapar(c.nombre)}</div>
+            <div class="nomina-meta">
+              ${escapar(c.dirigente?.nombre || 'sin dirigente')} ·
+              ${inscripciones} ${inscripciones === 1 ? 'inscripción' : 'inscripciones'}
+            </div>
+          </div>
+          ${
+            acceso
+              ? `<span class="credencial" title="Acceso del dirigente">
+                   <span class="credencial__par">${escapar(acceso.usuario)}</span>
+                   <span class="credencial__par">${escapar(acceso.clave)}</span>
+                 </span>`
+              : '<span class="seccion__nota">acceso externo</span>'
+          }
+        </div>`;
+    })
+    .join('')}</div>`;
 }
 
 /* ─────────────────────── vista principal del panel ─────────────────────── */
@@ -152,6 +195,55 @@ function vistaGeneral() {
       </section>
 
       <section class="seccion">
+        <div class="seccion__cabecera">
+          <h2 class="seccion__titulo">Clubes y accesos</h2>
+          <span class="seccion__nota">${Datos.getClubes().length} clubes registrados</span>
+        </div>
+
+        ${listaClubes()}
+
+        <div class="tarjeta" style="margin-top:12px">
+          <div class="tarjeta__titulo">Registrar un club</div>
+          <div class="tarjeta__cuerpo">
+            <p class="seccion__nota" style="margin-bottom:14px">
+              Al registrarlo se genera el usuario y la contraseña de su dirigente.
+              Se los pasas y ya puede cargar su nómina.
+            </p>
+            <div class="rejilla-campos">
+              <div class="campo campo--ancho">
+                <label class="campo__etiqueta" for="k-nombre">Nombre del club</label>
+                <input class="entrada" id="k-nombre" maxlength="40" placeholder="Deportivo Los Álamos">
+              </div>
+              <div class="campo">
+                <label class="campo__etiqueta" for="k-abrev">Siglas</label>
+                <input class="entrada" id="k-abrev" maxlength="4" placeholder="DLA">
+              </div>
+              <div class="campo">
+                <label class="campo__etiqueta" for="k-color">Color</label>
+                <input class="entrada" id="k-color" type="color" value="#34c85c" style="height:46px;padding:5px">
+              </div>
+              <div class="campo campo--ancho">
+                <label class="campo__etiqueta" for="k-dirigente">Dirigente responsable</label>
+                <input class="entrada" id="k-dirigente" maxlength="60" placeholder="Nombre y apellidos">
+              </div>
+              <div class="campo">
+                <label class="campo__etiqueta" for="k-telefono">Teléfono</label>
+                <input class="entrada" id="k-telefono" maxlength="20" placeholder="0991234567">
+              </div>
+              <div class="campo">
+                <label class="campo__etiqueta" for="k-estadio">Cancha</label>
+                <input class="entrada" id="k-estadio" maxlength="40" placeholder="opcional">
+              </div>
+            </div>
+            <div id="msj-club"></div>
+            <div class="acciones">
+              <button class="boton boton--ancho" id="btn-registrar-club">Registrar club y crear su acceso</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="seccion">
         <div class="seccion__cabecera"><h2 class="seccion__titulo">Crear un torneo nuevo</h2></div>
         <div class="tarjeta"><div class="tarjeta__cuerpo">
           <div class="rejilla-campos rejilla-campos--tres">
@@ -218,6 +310,37 @@ function vistaGeneral() {
       });
       if (!res.ok) return avisar(caja.querySelector('.js-msj-cat'), res.motivo, 'error');
       navegar('#/organizador', true);
+    });
+
+
+    $('#btn-registrar-club').addEventListener('click', async () => {
+      const res = await Datos.registrarClub({
+        nombre: $('#k-nombre').value,
+        abreviatura: $('#k-abrev').value,
+        colorPrimario: $('#k-color').value,
+        estadio: $('#k-estadio').value,
+        dirigente: {
+          nombre: $('#k-dirigente').value,
+          telefono: $('#k-telefono').value,
+        },
+      });
+      if (!res.ok) return avisar($('#msj-club'), res.motivo, 'error');
+
+      const acceso = Sesion.crearAccesoDirigente(res.club);
+      $('#msj-club').innerHTML = `
+        <div class="aviso aviso--exito" style="margin:14px 0 0">
+          <span class="aviso__icono">✅</span>
+          <div>
+            <strong>${escapar(res.club.nombre)} registrado.</strong>
+            <p style="margin:6px 0">Pásale estos datos a su dirigente:</p>
+            <div class="credencial credencial--grande">
+              <span class="credencial__par">Usuario: <b>${escapar(acceso.usuario)}</b></span>
+              <span class="credencial__par">Contraseña: <b>${escapar(acceso.clave)}</b></span>
+            </div>
+          </div>
+        </div>`;
+      ['#k-nombre', '#k-abrev', '#k-dirigente', '#k-telefono', '#k-estadio']
+        .forEach((sel) => { $(sel).value = ''; });
     });
 
     $('#btn-crear-torneo').addEventListener('click', async () => {
