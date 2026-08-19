@@ -2,12 +2,11 @@
  * SESIÓN — quién ha entrado y qué puede hacer.
  *
  * ────────────────────────────────────────────────────────────────────────────
- * ⚠️  ESTO NO ES SEGURIDAD. Es una demostración del flujo.
+ * ⚠️  ESTO TODAVÍA NO ES SEGURIDAD.
  *
- * Las credenciales están en `data/usuarios.json`, en texto plano y en un
- * repositorio público: cualquiera puede leerlas. Además, todo se comprueba en
- * el navegador, así que cualquiera con las herramientas de desarrollador puede
- * saltárselo. Sirve para que el cliente vea cómo será el flujo, nada más.
+ * Las credenciales están en `data/usuarios.json` en texto plano y todo se
+ * comprueba en el navegador. Funciona de verdad para usar la plataforma, pero
+ * no protege nada frente a alguien que sepa mirar el código.
  *
  * En producción esto se sustituye por **Supabase Auth**: la contraseña nunca
  * viaja al repositorio, la sesión la firma el servidor y quién puede ver o
@@ -33,8 +32,38 @@ function publico(u) {
   };
 }
 
-/** Membresías activadas durante el demo. Se guardan aparte de las cuentas. */
 const CLAVE_MEMBRESIAS = 'copa-fugaz:membresias';
+const CLAVE_ACCESOS = 'copa-fugaz:accesos';
+
+/** Accesos de dirigente que ha creado el organizador al registrar sus clubes. */
+function accesosLocales() {
+  try {
+    return JSON.parse(localStorage.getItem(CLAVE_ACCESOS) || '[]');
+  } catch {
+    return [];
+  }
+}
+
+function guardarAccesos(lista) {
+  try {
+    localStorage.setItem(CLAVE_ACCESOS, JSON.stringify(lista));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/** Contraseña corta, legible y fácil de dictar por teléfono. */
+function claveNueva() {
+  const letras = 'abcdefghijkmnpqrstuvwxyz';
+  const numeros = '23456789';
+  const al = new Uint32Array(6);
+  crypto.getRandomValues(al);
+  return (
+    Array.from({ length: 4 }, (_, i) => letras[al[i] % letras.length]).join('') +
+    Array.from({ length: 2 }, (_, i) => numeros[al[i + 4] % numeros.length]).join('')
+  );
+}
 
 function membresiasLocales() {
   try {
@@ -53,12 +82,43 @@ export const Sesion = {
     cargado = true;
   },
 
-  /** Cuentas de ejemplo, para poder enseñarlas en la pantalla de acceso. */
-  cuentasDemo: () => usuarios.map(publico),
+  /** Todas las cuentas: las del archivo más las que ha creado el organizador. */
+  todasLasCuentas() {
+    return [...usuarios, ...accesosLocales()];
+  },
 
-  /** Contraseña de ejemplo de un rol, solo para mostrarla en el demo. */
-  claveDemo(rol) {
-    return usuarios.find((u) => u.rol === rol)?.clave || '';
+  /** Accesos de dirigente creados, para que el organizador pueda consultarlos. */
+  accesosDeDirigentes: () => accesosLocales().map((a) => ({ ...a })),
+
+  /**
+   * Crea el acceso del dirigente de un club recién registrado.
+   * En producción esto será una invitación por correo desde Supabase Auth.
+   */
+  crearAccesoDirigente(club) {
+    const base = String(club.nombre)
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[̀-ͯ]/g, '')
+      .replace(/^(cd|cf|ad|club|deportivo|real|sporting|racing|union|atletico)\s+/, '')
+      .replace(/[^a-z0-9]/g, '')
+      .slice(0, 14) || 'club';
+
+    const existentes = this.todasLasCuentas().map((u) => u.usuario);
+    let usuario = base;
+    let n = 2;
+    while (existentes.includes(usuario)) usuario = base + n++;
+
+    const acceso = {
+      id: `u-${club.id}`,
+      usuario,
+      clave: claveNueva(),
+      rol: 'dirigente',
+      nombre: club.dirigente?.nombre || club.nombre,
+      clubId: club.id,
+      membresia: null,
+    };
+    guardarAccesos([...accesosLocales(), acceso]);
+    return acceso;
   },
 
   async entrar(usuario, clave) {
@@ -69,7 +129,7 @@ export const Sesion = {
       return { ok: false, motivo: 'Escribe tu usuario y tu contraseña.' };
     }
 
-    const encontrado = usuarios.find((u) => u.usuario.toLowerCase() === nombre);
+    const encontrado = this.todasLasCuentas().find((u) => u.usuario.toLowerCase() === nombre);
     // Mismo mensaje si falla el usuario o la contraseña: no damos pistas.
     if (!encontrado || encontrado.clave !== secreto) {
       return { ok: false, motivo: 'Usuario o contraseña incorrectos.' };
@@ -102,7 +162,7 @@ export const Sesion = {
     }
     if (!guardada?.id) return null;
     // Si la cuenta ya no existe (por ejemplo cambió el JSON), la sesión cae.
-    const vigente = usuarios.find((u) => u.id === guardada.id);
+    const vigente = this.todasLasCuentas().find((u) => u.id === guardada.id);
     if (!vigente) return null;
 
     const s = publico(vigente);

@@ -121,32 +121,23 @@ tocar código.
 En el demo, contratar activa la membresía al momento y no cobra nada. En producción lo
 confirmará la pasarela de pago mediante un webhook contra el servidor, nunca el navegador.
 
-## Acceso (demo) — no es seguridad
+## Acceso
 
-Hay login para que el cliente vea el flujo completo, pero **no protege nada**:
+Hay una sola cuenta en `data/usuarios.json`: la del organizador.
 
-- Las credenciales están en `data/usuarios.json` en texto plano, y el repositorio es
-  público: cualquiera puede leerlas.
-- Todo se comprueba en el navegador, así que se salta con las herramientas de desarrollo.
-- La pantalla de acceso **enseña las cuentas a propósito**, para que el cliente pueda
-  probar sin recordar nada, y avisa de que no use una contraseña real.
+| Usuario | Contraseña | Rol |
+|---|---|---|
+| `organizador` | `fugaz2026` | organizador, con membresía activa |
 
-| Usuario | Contraseña | Rol | Ve |
-|---|---|---|---|
-| `organizador` | `fugaz2026` | organizador **con** membresía | toda la liga |
-| `nuevo` | `nuevo2026` | organizador **sin** membresía | ve la puerta de pago |
-| `riberas`, `valdehierro`, `penalba`, `sanroque`, `lamata`, `molinos`, `fuentevieja`, `elrobledal`, `torrecilla`, `vegaalta` | `club2026` | dirigente | solo su club |
+**Los accesos de los dirigentes los crea el organizador** al registrar cada club desde su
+panel: la web genera usuario y contraseña y los muestra para que se los pase. Se guardan
+en el navegador (`copa-fugaz:accesos`).
 
-Qué se puede ver sin entrar: la portada, los planes y la liga (clasificación, calendario,
-clubes y goleadores).
+⚠️ **Todavía no es seguridad.** La contraseña del organizador está en texto plano en un
+repositorio público y todo se comprueba en el navegador. **Cambiar esa contraseña antes de
+enseñarlo** y no reutilizar ninguna real.
 
-La cuenta `nuevo` existe para poder enseñar el muro de pago: entra, no tiene membresía y
-la web le lleva a los planes en vez de al panel.
-
-**`assets/js/sesion.js` es el único archivo que hay que reescribir** para pasar a Supabase
-Auth. El resto del sitio solo llama a `Sesion.actual()`, `Sesion.esOrganizador()` y
-`Sesion.puedeGestionarClub()`. En producción, quién puede ver o tocar cada nómina lo
-decidirán las políticas RLS de la base de datos, no ese archivo.
+`assets/js/sesion.js` es el único archivo a reescribir para pasar a Supabase Auth.
 
 ## Reglas del proyecto
 
@@ -170,6 +161,8 @@ assets/js/data.js         ← CAPA DE DATOS + REGLAS DE NEGOCIO. Punto de migrac
 assets/js/sesion.js       ← ACCESO Y ROLES. Punto de migración a Supabase Auth.
 assets/js/acceso.js       pantalla de entrar
 assets/js/inicio.js       portada pública que explica el producto
+assets/js/estadisticas.js números del campeonato (goleadores, rachas, porterías a cero)
+assets/js/animaciones.js  máquina de escribir, parallax, revelado y contadores
 assets/js/membresia.js    planes y muro de pago del organizador
 assets/js/inscripcion.js  portal del dirigente (3 pasos: club → categoría → nómina)
 assets/js/organizador.js  panel del organizador (torneos, categorías, plazos, inscritos)
@@ -188,7 +181,13 @@ vistas solo enseñan el resultado. Está verificado que saltarse la interfaz y l
 `Datos.agregarJugador()` directamente también falla si el plazo cerró. Al migrar a
 Supabase, esas mismas reglas pasan a ser constraints y políticas RLS.
 
-**2. Los datos derivados nunca se guardan.** La clasificación y la tabla de goleadores se
+**2. El contenido nunca depende de JavaScript para verse.** Las animaciones adornan, no
+sostienen. La clase `.revelar` por sí sola no oculta nada: es el script quien añade
+`.revelar--armado` justo antes de observar el elemento, y hay un temporizador de rescate a
+los 2 segundos. Si el JavaScript falla o tarda, la página se lee igual. Lo mismo con los
+contadores: el HTML ya trae el número real, la animación solo lo recorre.
+
+**3. Los datos derivados nunca se guardan.** La clasificación y la tabla de goleadores se
 calculan siempre a partir de los partidos. Así no hay forma de que queden desincronizadas.
 
 ### Modelo de datos
@@ -200,21 +199,25 @@ inscripciones.json club × categoría → estado (borrador | enviada | aprobada)
 jugadores.json     jugador → inscripcionId (y equipoId si compite en la liga en curso)
 partidos.json      calendario y resultados
 torneo.json        descriptor de la competición que se está jugando
-usuarios.json      cuentas del demo, con su estado de membresía
+usuarios.json      cuenta del organizador
 planes.json        planes y precios (PRECIOS DE EJEMPLO, confirmar con el cliente)
 ```
 
 `equipoId` en `jugadores.json` se mantiene aparte de `inscripcionId` por compatibilidad
 con las vistas de competición: solo lo tienen los jugadores del torneo que ya se disputa.
 
-## Datos semilla
+## Datos
 
-Clubes, jugadores y cédulas son **inventados y realistas**, pensados para la presentación.
-Están montados para que el cliente vea los tres estados de un plazo a la vez: una
-categoría cerrada, varias abiertas y una que cierra en pocos días.
+**No hay datos inventados.** El repositorio solo trae lo que pidió el cliente:
 
-Para sustituirlos por los reales basta con editar los JSON de `data/` — no hace falta
-tocar código. Leer antes la sección de datos personales.
+- Los dos torneos que nombró: **Copa Fugaz Fútbol 11** y **Copa Fugaz Fútbol 7**.
+- Diez categorías por torneo, de **Sub-8 a Sub-40**, más Libre.
+
+Clubes, jugadores, inscripciones y partidos arrancan **vacíos**: los carga el cliente. Por
+eso todas las vistas tienen estados vacíos que explican qué aparecerá ahí.
+
+Esto también significa que **no hay ninguna cédula en el repositorio**, que es lo
+deseable: es público.
 
 ## Cómo levantar el sitio en local
 

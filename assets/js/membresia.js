@@ -134,12 +134,6 @@ export function vistaPlanes() {
         </div></div>
       </section>
 
-      <div class="aviso aviso--alerta">
-        <span class="aviso__icono">⚠️</span>
-        <div><strong>Versión de demostración.</strong> Aquí no se cobra nada: al contratar,
-        la membresía se activa al momento para que puedas ver el panel. En la versión final
-        el pago pasará por una pasarela y será ella quien confirme la activación.</div>
-      </div>
     </div></main>`;
 
   function activar(raiz, navegar) {

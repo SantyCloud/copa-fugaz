@@ -26,6 +26,8 @@ import { vistaOrganizador } from './organizador.js';
 import { vistaAcceso, vistaSinPermiso } from './acceso.js';
 import { vistaPortada } from './inicio.js';
 import { cargarPlanes, vistaPlanes, vistaMembresiaRequerida } from './membresia.js';
+import { vistaEstadisticas } from './estadisticas.js';
+import { activarAnimaciones, detenerAnimaciones } from './animaciones.js';
 
 /* ─────────────────────────────── rutas ─────────────────────────────────── */
 
@@ -56,7 +58,9 @@ const RUTAS = [
   { patron: /^\/equipo\/([\w-]+)$/, vista: vistaEquipo, nav: 'equipos',
     params: (m) => ({ id: m[1] }) },
 
-  { patron: /^\/goleadores$/, vista: vistaGoleadores, nav: 'goleadores' },
+  { patron: /^\/goleadores$/, vista: vistaGoleadores, nav: 'liga' },
+
+  { patron: /^\/estadisticas$/, vista: vistaEstadisticas, nav: 'estadisticas' },
 
   { patron: /^\/panel(?:\/(\d+))?$/, vista: vistaPanel, nav: 'panel',
     requiere: 'membresia',
@@ -172,6 +176,7 @@ function comprobarPermiso(ruta) {
 }
 
 function pintar() {
+  detenerAnimaciones();
   const ruta = resolver(location.hash);
   pintarSesion();
   ajustarNav();
@@ -204,6 +209,9 @@ function pintar() {
   if (typeof resultado.activar === 'function') {
     resultado.activar(contenedor(), navegar);
   }
+
+  // Las animaciones se rearman en cada vista y se detienen al cambiar.
+  activarAnimaciones(contenedor());
 }
 
 /* ─────────────────────────────── arranque ──────────────────────────────── */
