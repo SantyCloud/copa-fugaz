@@ -1509,6 +1509,111 @@ a.categoria-ficha--pronto:hover { border-color: var(--aviso); }
   .maqueta__chispa, .tarjeta-flotante { animation: none; }
 }
 
+/* ───────────────── una decisión por pantalla (dirigente) ───────────────── */
+.contenedor--medio { max-width: 760px; }
+
+.pregunta-grande {
+  font-size: clamp(1.3rem, 5vw, 1.7rem);
+  letter-spacing: -.03em;
+  margin-bottom: 6px;
+}
+.pregunta-ayuda {
+  color: var(--texto-medio);
+  font-size: .88rem;
+  margin-bottom: 18px;
+}
+.pregunta-grande + .elecciones,
+.pregunta-grande + .cat-rejilla { margin-top: 18px; }
+
+/* Tarjetas grandes: elegir torneo */
+.elecciones {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.eleccion {
+  display: block;
+  padding: 22px 20px;
+  background: var(--superficie);
+  border: 1px solid var(--borde-vivo);
+  border-radius: var(--radio);
+  transition: transform .16s, border-color .16s, background .16s;
+}
+.eleccion:hover {
+  transform: translateY(-3px);
+  border-color: var(--neon);
+  background: var(--superficie-alta);
+}
+
+.eleccion__icono {
+  display: grid; place-items: center;
+  width: 52px; height: 52px;
+  border-radius: 15px;
+  background: color-mix(in srgb, var(--neon) 16%, transparent);
+  color: color-mix(in srgb, var(--neon) 55%, #ffffff);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--neon) 38%, transparent);
+  margin-bottom: 14px;
+}
+.eleccion__titulo {
+  display: block;
+  font-size: 1.15rem; font-weight: 900;
+  letter-spacing: -.025em;
+}
+.eleccion__texto {
+  display: block;
+  font-size: .86rem; color: var(--texto-medio);
+  margin-top: 3px;
+}
+.eleccion__pie {
+  display: block;
+  font-size: .76rem; font-weight: 700;
+  color: var(--neon);
+  margin-top: 11px;
+}
+
+/* Fichas compactas: elegir categoría */
+.cat-rejilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+  gap: 10px;
+}
+
+.cat-ficha {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 14px 14px 12px;
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-chico);
+  transition: transform .15s, border-color .15s, background .15s;
+}
+a.cat-ficha:hover {
+  transform: translateY(-2px);
+  border-color: var(--neon);
+  background: var(--superficie-alta);
+}
+.cat-ficha--cerrada { opacity: .45; }
+
+.cat-ficha__nombre { font-size: 1rem; font-weight: 900; letter-spacing: -.02em; }
+.cat-ficha__edad { font-size: .72rem; color: var(--texto-tenue); }
+.cat-ficha__estado {
+  display: inline-block;
+  font-size: .68rem; font-weight: 800;
+  color: var(--texto-tenue);
+  margin-top: 7px;
+}
+.cat-ficha__estado--libre { color: var(--exito); }
+.cat-ficha__estado--pronto { color: var(--aviso); }
+.cat-ficha__estado--borrador { color: var(--texto-medio); }
+.cat-ficha__estado--enviada { color: #7ab0f5; }
+.cat-ficha__estado--aprobada { color: var(--neon); }
+
+@media (min-width: 620px) {
+  .elecciones { grid-template-columns: 1fr 1fr; }
+}
+
 /* ─────────────────────────────── varios ────────────────────────────────── */
 .vacio { text-align: center; padding: 40px 18px; color: var(--texto-tenue); }
 .vacio__icono { font-size: 1.9rem; margin-bottom: 8px; opacity: .5; }

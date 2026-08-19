@@ -169,7 +169,7 @@ assets/js/inicio.js       portada pública que explica el producto
 assets/js/estadisticas.js números del campeonato (goleadores, rachas, porterías a cero)
 assets/js/animaciones.js  máquina de escribir, parallax, revelado y contadores
 assets/js/membresia.js    planes y muro de pago del organizador
-assets/js/inscripcion.js  portal del dirigente (3 pasos: club → categoría → nómina)
+assets/js/inscripcion.js  portal del dirigente (torneo → categoría → jugadores)
 assets/js/organizador.js  panel del organizador (torneos, categorías, plazos, inscritos)
 assets/js/liga.js         cálculo de clasificación y goleadores
 assets/js/ui.js           vistas de competición + utilidades compartidas
@@ -178,7 +178,7 @@ assets/css/estilos.css
 assets/img/escudo*.png     escudo del cliente, en dos tamaños
 ```
 
-### Dos decisiones que conviene no romper
+### Decisiones que conviene no romper
 
 **1. Las reglas viven en `data.js`, no en las vistas.** La fecha límite, el rango de edad
 de la categoría, la cédula sin repetir y el cupo se comprueban en la capa de datos. Las
@@ -186,13 +186,19 @@ vistas solo enseñan el resultado. Está verificado que saltarse la interfaz y l
 `Datos.agregarJugador()` directamente también falla si el plazo cerró. Al migrar a
 Supabase, esas mismas reglas pasan a ser constraints y políticas RLS.
 
-**2. El contenido nunca depende de JavaScript para verse.** Las animaciones adornan, no
+**2. Una decisión por pantalla.** Quien usa esto no es informático. El portal del
+dirigente pregunta primero el torneo (dos opciones), luego la categoría (diez fichas
+cortas) y solo entonces pide los jugadores. Antes se enseñaban los dos torneos con sus
+veinte categorías a la vez y todas repetían el mismo texto. Si hay que añadir una opción,
+va en su propio paso, no apilada en el anterior.
+
+**3. El contenido nunca depende de JavaScript para verse.** Las animaciones adornan, no
 sostienen. La clase `.revelar` por sí sola no oculta nada: es el script quien añade
 `.revelar--armado` justo antes de observar el elemento, y hay un temporizador de rescate a
 los 2 segundos. Si el JavaScript falla o tarda, la página se lee igual. Lo mismo con los
 contadores: el HTML ya trae el número real, la animación solo lo recorre.
 
-**3. Los datos derivados nunca se guardan.** La clasificación y la tabla de goleadores se
+**4. Los datos derivados nunca se guardan.** La clasificación y la tabla de goleadores se
 calculan siempre a partir de los partidos. Así no hay forma de que queden desincronizadas.
 
 ### Modelo de datos
