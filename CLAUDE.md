@@ -84,7 +84,7 @@ La validación va **antes** del commit. No se pushea nada sin comprobar que func
 | Código | GitHub — `SantyCloud/copa-fugaz` (**público**) | igual, valorar volverlo privado |
 | Front | HTML/CSS/JS puro, sin build | igual |
 | Datos | JSON en `data/` + `localStorage` | Supabase (Postgres) |
-| Auth | ninguna (demo abierto) | Supabase Auth: organizador y dirigentes |
+| Auth | `data/usuarios.json` + `sesion.js` (**solo demostración**) | Supabase Auth: organizador y dirigentes |
 | Ficheros | — | Supabase Storage (logos de club) |
 | Permisos | — | Supabase RLS |
 | Deploy | Cloudflare Pages o GitHub Pages | + dominio propio |
@@ -101,6 +101,29 @@ El sistema guarda **nombre, apellidos, edad y número de cédula**, y hay catego
 - **Nunca commitear datos reales de jugadores.** El repositorio es público: un commit con
   cédulas auténticas quedaría expuesto y cacheado para siempre aunque se borre después.
 - En producción, esos datos van en Supabase con RLS, nunca en el repositorio.
+
+## Acceso (demo) — no es seguridad
+
+Hay login para que el cliente vea el flujo completo, pero **no protege nada**:
+
+- Las credenciales están en `data/usuarios.json` en texto plano, y el repositorio es
+  público: cualquiera puede leerlas.
+- Todo se comprueba en el navegador, así que se salta con las herramientas de desarrollo.
+- La pantalla de acceso **enseña las cuentas a propósito**, para que el cliente pueda
+  probar sin recordar nada, y avisa de que no use una contraseña real.
+
+| Usuario | Contraseña | Rol | Ve |
+|---|---|---|---|
+| `organizador` | `fugaz2026` | organizador | toda la liga |
+| `riberas`, `valdehierro`, `penalba`, `sanroque`, `lamata`, `molinos`, `fuentevieja`, `elrobledal`, `torrecilla`, `vegaalta` | `club2026` | dirigente | solo su club |
+
+Qué se puede ver sin entrar: clasificación, calendario, clubes y goleadores. La liga es
+pública, como en cualquier web de competición.
+
+**`assets/js/sesion.js` es el único archivo que hay que reescribir** para pasar a Supabase
+Auth. El resto del sitio solo llama a `Sesion.actual()`, `Sesion.esOrganizador()` y
+`Sesion.puedeGestionarClub()`. En producción, quién puede ver o tocar cada nómina lo
+decidirán las políticas RLS de la base de datos, no ese archivo.
 
 ## Reglas del proyecto
 
@@ -120,6 +143,8 @@ tocar para migrar a Supabase — el resto del sitio no se entera de dónde salen
 index.html                una sola página, router por hash (#/, #/inscripcion, ...)
 data/*.json               datos semilla
 assets/js/data.js         ← CAPA DE DATOS + REGLAS DE NEGOCIO. Punto de migración.
+assets/js/sesion.js       ← ACCESO Y ROLES. Punto de migración a Supabase Auth.
+assets/js/acceso.js       pantalla de entrar
 assets/js/inscripcion.js  portal del dirigente (3 pasos: club → categoría → nómina)
 assets/js/organizador.js  panel del organizador (torneos, categorías, plazos, inscritos)
 assets/js/liga.js         cálculo de clasificación y goleadores
@@ -149,6 +174,7 @@ inscripciones.json club × categoría → estado (borrador | enviada | aprobada)
 jugadores.json     jugador → inscripcionId (y equipoId si compite en la liga en curso)
 partidos.json      calendario y resultados
 torneo.json        descriptor de la competición que se está jugando
+usuarios.json      cuentas del demo (organizador y un dirigente por club)
 ```
 
 `equipoId` en `jugadores.json` se mantiene aparte de `inscripcionId` por compatibilidad

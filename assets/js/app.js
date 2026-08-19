@@ -1,34 +1,44 @@
 /**
- * Arranque y navegación.
+ * Arranque, navegación y control de acceso.
  *
  * Router por hash (#/ruta). Sin dependencias y sin build: funciona en cualquier
- * hosting estático y no necesita reescritura de URLs en el servidor, a
- * diferencia de un router por history API.
+ * hosting estático y no necesita reescritura de URLs en el servidor.
+ *
+ * Cada ruta declara qué hace falta para entrar:
+ *   sin `requiere`      → pública (la liga la puede ver cualquiera)
+ *   'sesion'            → hay que haber entrado
+ *   'organizador'       → solo el organizador
  */
 
 import { Datos } from './data.js';
+import { Sesion } from './sesion.js';
 import {
   vistaInicio,
   vistaCalendario,
   vistaEquipos,
   vistaEquipo,
   vistaGoleadores,
+  escapar,
 } from './ui.js';
 import { vistaPanel } from './panel.js';
 import { vistaInscripcion } from './inscripcion.js';
 import { vistaOrganizador } from './organizador.js';
+import { vistaAcceso, vistaSinPermiso } from './acceso.js';
 
 /* ─────────────────────────────── rutas ─────────────────────────────────── */
 
 const RUTAS = [
   { patron: /^\/?$/, vista: vistaInicio, nav: 'inicio' },
 
+  { patron: /^\/entrar(?:\/(.+))?$/, vista: vistaAcceso, nav: 'entrar',
+    params: (m) => ({ destino: m[1] }) },
+
   { patron: /^\/inscripcion(?:\/([\w-]+))?(?:\/([\w-]+))?$/,
-    vista: vistaInscripcion, nav: 'inscripcion',
+    vista: vistaInscripcion, nav: 'inscripcion', requiere: 'sesion',
     params: (m) => ({ clubId: m[1], categoriaId: m[2] }) },
 
   { patron: /^\/organizador(?:\/([\w-]+))?$/,
-    vista: vistaOrganizador, nav: 'organizador',
+    vista: vistaOrganizador, nav: 'organizador', requiere: 'organizador',
     params: (m) => ({ categoriaId: m[1] }) },
 
   { patron: /^\/calendario(?:\/(\d+))?$/,
@@ -43,6 +53,7 @@ const RUTAS = [
   { patron: /^\/goleadores$/, vista: vistaGoleadores, nav: 'goleadores' },
 
   { patron: /^\/panel(?:\/(\d+))?$/, vista: vistaPanel, nav: 'panel',
+    requiere: 'organizador',
     params: (m) => ({ id: m[1] }) },
 ];
 
@@ -62,6 +73,44 @@ const contenedor = () => document.getElementById('app');
 function marcarNavActiva(nombre) {
   document.querySelectorAll('.nav__enlace').forEach((a) => {
     a.classList.toggle('activo', a.dataset.nav === nombre);
+  });
+}
+
+/** Enseña u oculta los enlaces según quién haya entrado. */
+function ajustarNav() {
+  const esOrg = Sesion.esOrganizador();
+  const dentro = Sesion.hayAlguien();
+  document.querySelectorAll('.nav__enlace[data-solo]').forEach((a) => {
+    const solo = a.dataset.solo;
+    const visible = solo === 'organizador' ? esOrg : dentro;
+    a.classList.toggle('oculto', !visible);
+  });
+}
+
+/** Chip de la cabecera con quién está dentro. */
+function pintarSesion() {
+  const caja = document.getElementById('caja-sesion');
+  if (!caja) return;
+  const s = Sesion.actual();
+
+  if (!s) {
+    caja.innerHTML = `<a class="boton boton--chico" href="#/entrar">Entrar</a>`;
+    return;
+  }
+
+  const club = s.clubId ? Datos.getClub(s.clubId) : null;
+  caja.innerHTML = `
+    <div class="sesion">
+      <span class="sesion__datos">
+        <span class="sesion__nombre">${escapar(club ? club.nombre : s.nombre)}</span>
+        <span class="sesion__rol">${s.rol === 'organizador' ? 'Organizador' : 'Dirigente'}</span>
+      </span>
+      <button type="button" class="boton boton--secundario boton--chico" id="btn-salir">Salir</button>
+    </div>`;
+
+  document.getElementById('btn-salir').addEventListener('click', () => {
+    Sesion.salir();
+    navegar('#/entrar');
   });
 }
 
@@ -89,8 +138,31 @@ function navegar(hash, reemplazar = false) {
   }
 }
 
+/** Devuelve la vista a pintar, o null si la ruta está permitida. */
+function comprobarPermiso(ruta) {
+  if (!ruta.requiere) return null;
+
+  if (!Sesion.hayAlguien()) {
+    // Le mandamos a entrar y recordamos a dónde quería ir.
+    const destino = encodeURIComponent(location.hash || '#/');
+    navegar(`#/entrar/${destino}`, true);
+    return 'redirigido';
+  }
+
+  if (ruta.requiere === 'organizador' && !Sesion.esOrganizador()) {
+    return vistaSinPermiso(
+      'Esta parte es del organizador de la liga. Con tu cuenta de dirigente puedes ' +
+        'inscribir a los jugadores de tu club desde la sección Inscripción.'
+    );
+  }
+
+  return null;
+}
+
 function pintar() {
   const ruta = resolver(location.hash);
+  pintarSesion();
+  ajustarNav();
 
   if (!ruta) {
     marcarNavActiva(null);
@@ -101,9 +173,12 @@ function pintar() {
     return;
   }
 
+  const bloqueo = comprobarPermiso(ruta);
+  if (bloqueo === 'redirigido') return;
+
   let resultado;
   try {
-    resultado = ruta.vista(ruta.argumentos);
+    resultado = bloqueo || ruta.vista(ruta.argumentos);
   } catch (error) {
     console.error('Error al construir la vista:', error);
     pintarError('Algo falló al mostrar esta página', 'Recarga la página para intentarlo de nuevo.');
@@ -123,7 +198,7 @@ function pintar() {
 
 async function iniciar() {
   try {
-    await Datos.cargar();
+    await Promise.all([Datos.cargar(), Sesion.cargar()]);
   } catch (error) {
     console.error(error);
     pintarError(

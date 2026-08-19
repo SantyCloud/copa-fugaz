@@ -1,0 +1,90 @@
+[
+  {
+    "id": "u-organizador",
+    "usuario": "organizador",
+    "clave": "fugaz2026",
+    "rol": "organizador",
+    "nombre": "Organizador de la Liga",
+    "clubId": null
+  },
+  {
+    "id": "u-atletico-riberas",
+    "usuario": "riberas",
+    "clave": "club2026",
+    "rol": "dirigente",
+    "nombre": "Manuel Otero",
+    "clubId": "atletico-riberas"
+  },
+  {
+    "id": "u-cd-valdehierro",
+    "usuario": "valdehierro",
+    "clave": "club2026",
+    "rol": "dirigente",
+    "nombre": "Rosa Beltrán",
+    "clubId": "cd-valdehierro"
+  },
+  {
+    "id": "u-union-penalba",
+    "usuario": "penalba",
+    "clave": "club2026",
+    "rol": "dirigente",
+    "nombre": "Andrés Pinto",
+    "clubId": "union-penalba"
+  },
+  {
+    "id": "u-real-san-roque",
+    "usuario": "sanroque",
+    "clave": "club2026",
+    "rol": "dirigente",
+    "nombre": "Lucía Cabrera",
+    "clubId": "real-san-roque"
+  },
+  {
+    "id": "u-deportivo-la-mata",
+    "usuario": "lamata",
+    "clave": "club2026",
+    "rol": "dirigente",
+    "nombre": "Javier Nogales",
+    "clubId": "deportivo-la-mata"
+  },
+  {
+    "id": "u-cf-molinos",
+    "usuario": "molinos",
+    "clave": "club2026",
+    "rol": "dirigente",
+    "nombre": "Elena Salas",
+    "clubId": "cf-molinos"
+  },
+  {
+    "id": "u-sporting-fuentevieja",
+    "usuario": "fuentevieja",
+    "clave": "club2026",
+    "rol": "dirigente",
+    "nombre": "Tomás Herrera",
+    "clubId": "sporting-fuentevieja"
+  },
+  {
+    "id": "u-racing-el-robledal",
+    "usuario": "elrobledal",
+    "clave": "club2026",
+    "rol": "dirigente",
+    "nombre": "Marta Ledesma",
+    "clubId": "racing-el-robledal"
+  },
+  {
+    "id": "u-ad-torrecilla",
+    "usuario": "torrecilla",
+    "clave": "club2026",
+    "rol": "dirigente",
+    "nombre": "Ismael Corona",
+    "clubId": "ad-torrecilla"
+  },
+  {
+    "id": "u-cd-vega-alta",
+    "usuario": "vegaalta",
+    "clave": "club2026",
+    "rol": "dirigente",
+    "nombre": "Nuria Peláez",
+    "clubId": "cd-vega-alta"
+  }
+]
