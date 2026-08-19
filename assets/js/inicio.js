@@ -96,31 +96,75 @@ function maquetaApp() {
     </div>`;
 }
 
+
+/**
+ * Torneos con sus categorías y el estado del plazo.
+ * Es el contenido principal de la portada: quien llega quiere ver dónde
+ * puede inscribirse, no que le vendan nada.
+ */
+function listaTorneos(torneos) {
+  if (!torneos.length) {
+    return `<div class="tarjeta"><div class="vacio">
+      <div class="vacio__icono">🏆</div>
+      <p><strong>Todavía no hay torneos publicados.</strong></p>
+    </div></div>`;
+  }
+
+  return torneos
+    .map((t) => {
+      const cats = t.categorias
+        .map((c) => {
+          const plazo = Datos.plazoAbierto(c);
+          const pronto = plazo.abierto && plazo.dias <= 7;
+          const estado = !plazo.abierto ? 'cerrada' : pronto ? 'pronto' : 'abierta';
+          const detalle = !plazo.abierto
+            ? 'Plazo cerrado'
+            : plazo.dias <= 0
+            ? 'Último día'
+            : `Quedan ${plazo.dias} día${plazo.dias === 1 ? '' : 's'}`;
+
+          const cuerpo = `
+            <span class="categoria-ficha__nombre">${escapar(c.nombre)}</span>
+            <span class="categoria-ficha__edad">${
+              c.edadMaxima != null ? `hasta ${c.edadMaxima} años` : 'sin límite'
+            }</span>
+            <span class="categoria-ficha__plazo">${escapar(detalle)}</span>`;
+
+          return plazo.abierto
+            ? `<a class="categoria-ficha categoria-ficha--${estado}" href="#/entrar">${cuerpo}</a>`
+            : `<span class="categoria-ficha categoria-ficha--${estado}">${cuerpo}</span>`;
+        })
+        .join('');
+
+      const abiertas = t.categorias.filter((c) => Datos.plazoAbierto(c).abierto).length;
+
+      return `
+        <div class="torneo-tarjeta revelar">
+          <div class="torneo-tarjeta__cabecera">
+            <span class="torneo-tarjeta__icono">${Iconos.trofeo(20)}</span>
+            <div>
+              <h3 class="torneo-tarjeta__nombre">${escapar(t.nombre)}</h3>
+              <span class="torneo-tarjeta__meta">${escapar(t.modalidad)} ·
+                ${abiertas} de ${t.categorias.length} categorías abiertas</span>
+            </div>
+          </div>
+          <div class="categorias-rejilla">${cats}</div>
+        </div>`;
+    })
+    .join('');
+}
+
 export function vistaPortada() {
   const sesion = Sesion.actual();
   const torneos = Datos.getTorneos();
   const categorias = Datos.getCategorias();
 
-  // Quien llega sin sesión elige puerta: la mayoría son dirigentes a los que
-  // les han pasado el enlace, así que su camino va primero y bien visible.
-  const puertas = `
-    <div class="puertas">
-      <a class="puerta puerta--principal" href="#/entrar">
-        <span class="puerta__icono">${Iconos.personas(22)}</span>
-        <span class="puerta__titulo">Vengo a inscribir mi club</span>
-        <span class="puerta__texto">Entra con el acceso que te dio la organización de tu torneo.</span>
-        <span class="puerta__accion">Entrar &rarr;</span>
-      </a>
-      <a class="puerta" href="#/planes">
-        <span class="puerta__icono">${Iconos.trofeo(22)}</span>
-        <span class="puerta__titulo">Quiero organizar un torneo</span>
-        <span class="puerta__texto">Crea el torneo, abre categorías y controla los plazos.</span>
-        <span class="puerta__accion">Ver planes &rarr;</span>
-      </a>
-    </div>`;
-
+  // La portada no vende acceso: lleva a inscribirse o a mirar los torneos.
   const accion = !sesion
-    ? puertas
+    ? `<div class="heroe__botones">
+         <a class="boton boton--grande" href="#/entrar">Inscribir mi club</a>
+         <button type="button" class="boton boton--fantasma boton--grande" id="btn-ver-torneos">Ver los torneos</button>
+       </div>`
     : sesion.rol === 'dirigente'
     ? `<div class="heroe__botones"><a class="boton boton--grande" href="#/inscripcion">Ir a mi club</a></div>`
     : Sesion.tieneMembresiaActiva()
@@ -199,10 +243,21 @@ export function vistaPortada() {
     <main class="principal">
       <div class="contenedor">
 
+        <section class="seccion" id="torneos">
+          <div class="seccion__cabecera revelar">
+            <div>
+              <span class="seccion__ojo" style="--acento:var(--ldfaf-verde)">Inscripciones</span>
+              <h2 class="seccion__titulo seccion__titulo--grande">Torneos y plazos</h2>
+            </div>
+            <span class="seccion__nota">Elige tu categoría y entra con el acceso de tu club</span>
+          </div>
+          ${listaTorneos(torneos)}
+        </section>
+
         <section class="seccion">
           <div class="seccion__cabecera revelar">
             <div>
-              <span class="seccion__ojo" style="--acento:var(--ldfaf-verde)">Cómo funciona</span>
+              <span class="seccion__ojo" style="--acento:var(--ldfaf-azul)">Cómo funciona</span>
               <h2 class="seccion__titulo seccion__titulo--grande">Del anuncio del torneo<br>al primer partido</h2>
             </div>
           </div>
@@ -217,7 +272,7 @@ export function vistaPortada() {
         <section class="seccion">
           <div class="seccion__cabecera revelar">
             <div>
-              <span class="seccion__ojo" style="--acento:var(--ldfaf-azul)">Ventajas</span>
+              <span class="seccion__ojo" style="--acento:var(--ldfaf-morado)">Ventajas</span>
               <h2 class="seccion__titulo seccion__titulo--grande">Lo que te quitas de encima</h2>
             </div>
           </div>
@@ -232,7 +287,7 @@ export function vistaPortada() {
         <section class="seccion">
           <div class="franja revelar">
             <div class="franja__texto">
-              <span class="seccion__ojo" style="--acento:var(--ldfaf-morado)">Estadísticas</span>
+              <span class="seccion__ojo" style="--acento:var(--ldfaf-rojo)">Estadísticas</span>
               <h2 class="seccion__titulo seccion__titulo--grande">Los números salen solos</h2>
               <p class="franja__parrafo">
                 Cargas un resultado y todo se recalcula. Nada se escribe a mano.
@@ -264,6 +319,11 @@ export function vistaPortada() {
 
   function activar(raiz) {
     maquinaDeEscribir(raiz.querySelector('#frase-rotativa'), FRASES);
+
+    // No usamos un ancla porque el router ya se apropia del hash.
+    raiz.querySelector('#btn-ver-torneos')?.addEventListener('click', () => {
+      raiz.querySelector('#torneos')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
   }
 
   return { html, activar };

@@ -923,76 +923,71 @@ a.seccion__nota:hover { color: var(--neon); }
 .hero__etiqueta { display: inline-flex; align-items: center; gap: 7px; }
 .hero__etiqueta svg { flex-shrink: 0; }
 
-/* ─────────────────────── las dos puertas del héroe ─────────────────────── */
-/* Quien entra elige camino en el primer vistazo, sin leerse la página. */
-.puertas {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 11px;
-  margin-top: 26px;
-}
-
-.puerta {
-  display: block;
-  padding: 17px 17px 15px;
+/* ───────────────────── torneos y categorías (portada) ──────────────────── */
+.torneo-tarjeta {
   background: var(--superficie);
-  border: 1px solid var(--borde-vivo);
+  border: 1px solid var(--borde);
   border-radius: var(--radio);
-  transition: transform .17s, border-color .17s, background .17s;
+  padding: 18px 16px 16px;
+  margin-bottom: 14px;
 }
-.puerta:hover {
-  transform: translateY(-3px);
-  background: var(--superficie-alta);
-  border-color: color-mix(in srgb, var(--neon) 45%, var(--borde-vivo));
-}
+.torneo-tarjeta:last-child { margin-bottom: 0; }
 
-.puerta--principal {
-  background: linear-gradient(158deg, var(--neon-hondo), var(--superficie));
-  border-color: var(--neon-borde);
+.torneo-tarjeta__cabecera {
+  display: flex; align-items: center; gap: 12px;
+  padding-bottom: 14px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid var(--borde-suave);
 }
-.puerta--principal:hover { border-color: var(--neon); }
-
-.puerta__icono {
+.torneo-tarjeta__icono {
   display: grid; place-items: center;
   width: 40px; height: 40px;
   border-radius: 12px;
   background: color-mix(in srgb, var(--neon) 16%, transparent);
   color: color-mix(in srgb, var(--neon) 55%, #ffffff);
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--neon) 38%, transparent);
-  margin-bottom: 12px;
+  flex-shrink: 0;
 }
-.puerta:not(.puerta--principal) .puerta__icono {
-  background: color-mix(in srgb, var(--ldfaf-azul) 20%, transparent);
-  color: color-mix(in srgb, var(--ldfaf-azul) 52%, #ffffff);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ldfaf-azul) 42%, transparent);
+.torneo-tarjeta__nombre { font-size: 1.02rem; }
+.torneo-tarjeta__meta { font-size: .78rem; color: var(--texto-tenue); }
+
+.categorias-rejilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+  gap: 9px;
 }
 
-.puerta__titulo {
-  display: block;
-  font-size: 1rem; font-weight: 800;
-  letter-spacing: -.02em;
-  margin-bottom: 5px;
+.categoria-ficha {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 11px 12px;
+  border-radius: var(--radio-chico);
+  border: 1px solid var(--borde);
+  background: var(--fondo-alt);
+  transition: transform .15s, border-color .15s, background .15s;
 }
-.puerta__texto {
-  display: block;
-  font-size: .84rem;
-  color: var(--texto-medio);
-  margin-bottom: 12px;
+a.categoria-ficha:hover {
+  transform: translateY(-2px);
+  background: var(--superficie-alta);
 }
-.puerta__accion {
-  display: inline-block;
-  font-size: .84rem; font-weight: 800;
-  color: var(--neon);
-}
-.puerta:not(.puerta--principal) .puerta__accion {
-  color: color-mix(in srgb, var(--ldfaf-azul) 55%, #ffffff);
-}
+
+.categoria-ficha__nombre { font-size: .88rem; font-weight: 800; }
+.categoria-ficha__edad { font-size: .68rem; color: var(--texto-tenue); }
+.categoria-ficha__plazo { font-size: .68rem; font-weight: 700; margin-top: 3px; }
+
+.categoria-ficha--abierta { border-left: 3px solid var(--exito); }
+.categoria-ficha--abierta .categoria-ficha__plazo { color: var(--exito); }
+a.categoria-ficha--abierta:hover { border-color: var(--exito); }
+
+.categoria-ficha--pronto { border-left: 3px solid var(--aviso); }
+.categoria-ficha--pronto .categoria-ficha__plazo { color: var(--aviso); }
+a.categoria-ficha--pronto:hover { border-color: var(--aviso); }
+
+.categoria-ficha--cerrada { border-left: 3px solid var(--borde-vivo); opacity: .55; }
+.categoria-ficha--cerrada .categoria-ficha__plazo { color: var(--texto-tenue); }
 
 .heroe__botones { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 26px; }
-
-@media (min-width: 560px) {
-  .puertas { grid-template-columns: 1fr 1fr; }
-}
 
 /* ─────────────────── maqueta del producto en el héroe ──────────────────── */
 .heroe__maqueta { position: relative; will-change: transform; }
